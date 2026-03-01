@@ -651,6 +651,47 @@ assertEqual(FlatMul2x2.Distributed.Left.self, N3.self)
 assertEqual(FlatMul2x2.Distributed.Right.self, N2.self)
 assertEqual(FlatMul2x2.Distributed.Total.self, N6.self)
 
+// -- Theorem 4: n * 1 = n (right multiplicative identity) --
+// Proved by: extension Zero: MulRightOne + extension AddOne: MulRightOne
+// Base case uses TimesGroup<TimesZero<Zero>>; step uses SuccLeftMul.Distributed.
+func useMulRightOne<N: MulRightOne>(_: N.Type) {}
+useMulRightOne(N0.self)
+useMulRightOne(N5.self)
+useMulRightOne(N9.self)
+
+// Verify structural correctness:
+assertEqual(N0.TimesOneProof.Left.self, N0.self)     // 0 * 1: left = 0
+assertEqual(N0.TimesOneProof.Right.self, N1.self)    // 0 * 1: right = 1
+assertEqual(N0.TimesOneProof.Total.self, N0.self)    // 0 * 1 = 0
+
+assertEqual(N5.TimesOneProof.Left.self, N5.self)     // 5 * 1: left = 5
+assertEqual(N5.TimesOneProof.Right.self, N1.self)    // 5 * 1: right = 1
+assertEqual(N5.TimesOneProof.Total.self, N5.self)    // 5 * 1 = 5
+
+assertEqual(N9.TimesOneProof.Left.self, N9.self)     // 9 * 1: left = 9
+assertEqual(N9.TimesOneProof.Right.self, N1.self)    // 9 * 1: right = 1
+assertEqual(N9.TimesOneProof.Total.self, N9.self)    // 9 * 1 = 9
+
+// -- Theorem 5: 1 * n = n (left multiplicative identity) --
+// Proved by: extension Zero: MulLeftOne + extension AddOne: MulLeftOne
+// Each step adds one tick (Left = 1) and one group boundary.
+func useMulLeftOne<N: MulLeftOne>(_: N.Type) {}
+useMulLeftOne(N0.self)
+useMulLeftOne(N5.self)
+useMulLeftOne(N9.self)
+
+assertEqual(N0.OneTimesProof.Left.self, N1.self)     // 1 * 0: left = 1
+assertEqual(N0.OneTimesProof.Right.self, N0.self)    // 1 * 0: right = 0
+assertEqual(N0.OneTimesProof.Total.self, N0.self)    // 1 * 0 = 0
+
+assertEqual(N5.OneTimesProof.Left.self, N1.self)     // 1 * 5: left = 1
+assertEqual(N5.OneTimesProof.Right.self, N5.self)    // 1 * 5: right = 5
+assertEqual(N5.OneTimesProof.Total.self, N5.self)    // 1 * 5 = 5
+
+assertEqual(N9.OneTimesProof.Left.self, N1.self)     // 1 * 9: left = 1
+assertEqual(N9.OneTimesProof.Right.self, N9.self)    // 1 * 9: right = 9
+assertEqual(N9.OneTimesProof.Total.self, N9.self)    // 1 * 9 = 9
+
 // -- Theorem 3: a * b = b * a (commutativity, per fixed A) --
 // For each fixed A (N2, N3, ...), proves A * b = b * A for all b.
 // The forward proof constructs A * b directly (A ticks per group).
@@ -875,9 +916,10 @@ useDistributivity(Distr2x2p3.self)
 // difference-of-squares factor correspondence), the golden ratio /
 // Fibonacci correspondence, the sqrt(2) CF / matrix construction, four
 // universal addition theorems (left zero identity, successor-left shift,
-// commutativity, and associativity), four universal multiplication
+// commutativity, and associativity), six universal multiplication
 // theorems (left zero annihilation, successor-left multiplication,
 // per-A commutativity -- including macro-generated proofs for N4 and N5 --
-// and distributivity over addition), and coinductive streams for irrational
+// right and left multiplicative identity, and distributivity over
+// addition), and coinductive streams for irrational
 // numbers (PhiCF, Sqrt2CF with universal unfold theorems) -- all without
 // executing a single computation at runtime.

@@ -150,6 +150,53 @@ extension AddOne: _MulCommN3 where Predecessor: _MulCommN3 {
     public typealias RevProof = Predecessor.RevProof.Distributed
 }
 
+// MARK: - Theorem 4: Right multiplicative identity (n * 1 = n)
+
+/// For any natural number N, there exists a proof that N * 1 = N.
+/// Proved by induction on N using SuccLeftMul.
+///
+/// Base case: 0 * 1 = 0, witnessed by TimesGroup<TimesZero<Zero>> (one group
+/// of zero ticks). Inductive step: if N * 1 = N, then S(N) * 1 = N + 1 = S(N)
+/// via SuccLeftMul.Distributed.
+public protocol MulRightOne: Natural {
+    associatedtype TimesOneProof: NaturalProduct & SuccLeftMul
+}
+
+// Base case: 0 * 1 = 0 (one group, zero ticks)
+extension Zero: MulRightOne {
+    public typealias TimesOneProof = TimesGroup<TimesZero<Zero>>
+}
+
+// Inductive step: n * 1 = n => S(n) * 1 = S(n)
+// SuccLeftMul.Distributed adds one extra tick per group; with one group,
+// Total goes from n to n + 1 = S(n).
+extension AddOne: MulRightOne where Predecessor: MulRightOne {
+    public typealias TimesOneProof = Predecessor.TimesOneProof.Distributed
+}
+
+// MARK: - Theorem 5: Left multiplicative identity (1 * n = n)
+
+/// For any natural number N, there exists a proof that 1 * N = N.
+/// Proved by induction on N.
+///
+/// Base case: 1 * 0 = 0, witnessed by TimesZero<N1>. Inductive step:
+/// given 1 * n = n, then 1 * S(n) = TimesGroup<TimesTick<proof>> with
+/// Total = S(n) (one tick per group, since Left = 1).
+public protocol MulLeftOne: Natural {
+    associatedtype OneTimesProof: NaturalProduct & SuccLeftMul
+}
+
+// Base case: 1 * 0 = 0
+extension Zero: MulLeftOne {
+    public typealias OneTimesProof = TimesZero<N1>
+}
+
+// Inductive step: 1 * n = n => 1 * S(n) = S(n)
+// One tick (Left = 1) + one group boundary.
+extension AddOne: MulLeftOne where Predecessor: MulLeftOne {
+    public typealias OneTimesProof = TimesGroup<TimesTick<Predecessor.OneTimesProof>>
+}
+
 // MARK: - Macro-generated commutativity proofs
 //
 // The @MulCommProof macro generates bounded-depth paired proofs showing
