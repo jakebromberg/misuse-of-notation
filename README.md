@@ -67,28 +67,7 @@ typealias Mul2x3 = TimesSucc<Mul2x2, Add4p2>
 assertEqual(Mul2x3.Total.self, N6.self)
 ```
 
-### Comparison witnesses (`NaturalLessThan`)
-
-The `NaturalLessThan` protocol witnesses that `Left < Right`:
-
-- `ZeroLT<N>`: proves `0 < S(N)`
-- `SuccLT<Proof>`: if `A < B`, proves `S(A) < S(B)`
-
-```swift
-// Proof that 2 < 5 (peel off 2 successors, then 0 < 3)
-typealias TwoLtFive = SuccLT<SuccLT<ZeroLT<N2>>>
-```
-
-### Type-level arithmetic (`Sum`, `Product`)
-
-For convenience, `Sum<L, R>.Result` and `Product<L, R>.Result` compute type-level addition and multiplication via constrained extensions:
-
-```swift
-assertEqual(Sum<N2, N3>.Result.self, N5.self)
-assertEqual(Product<N2, N3>.Result.self, N6.self)
-```
-
-The `@ProductConformance(n)` macro generates the inductive protocols and conformances needed for `Product` to handle a given multiplier.
+The tutorial uses the flat encoding (`TimesTick`/`TimesGroup`) for universal multiplication theorems, which decomposes each step into primitives without where clauses.
 
 ## Macros as proof generators
 
@@ -127,19 +106,6 @@ The CF recurrence `h_{n+1} = a_n * h_n + h_{n-1}` requires the coefficient `a_n`
 Universal theorems work when the inductive step is structurally uniform -- the same operation at every depth. `AddCommutative` applies the same `SuccLeftAdd` transformation at each inductive step regardless of the proof's shape. Bounded proofs are needed when the step varies: different CF coefficients at each depth, different Wallis factors at each step, different Fibonacci sums at each level.
 
 This is the precise boundary between what Swift's type system can prove universally (via conditional conformance as structural induction) and what requires macro assistance (via compile-time computation as normalization).
-
-## Cayley-Dickson construction
-
-The Cayley-Dickson construction builds higher-dimensional algebras from pairs. The type-level representation `CayleyDickson<Re, Im>` encodes the structure:
-
-| Level | Algebra | Dimensions |
-|-------|---------|------------|
-| 0 | Integers | 1 |
-| 1 | Gaussian integers | 2 |
-| 2 | Quaternions | 4 |
-| 3 | Octonions | 8 |
-
-Integer types (`Zero`, `AddOne`, `SubOne`) conform to the `Algebra` marker protocol as level-0 scalars.
 
 ## Continued fractions and pi
 

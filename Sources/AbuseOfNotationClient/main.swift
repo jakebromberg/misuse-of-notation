@@ -73,169 +73,7 @@ assertEqual(ThreePlusTwo.Total.self, N5.self)
 // agree -- we can assert this directly:
 assertEqual(TwoPlusThree.Total.self, ThreePlusTwo.Total.self)
 
-// MARK: - 3. Multiplication witnesses
-
-// Multiplication extends addition. The NaturalProduct protocol witnesses
-// that Left * Right = Total, using two constructors:
-//   TimesZero<N>            -- proves N * 0 = 0             (base case)
-//   TimesSucc<Mul, Add>     -- if Mul proves A * B = C      (inductive step)
-//                              and Add proves C + A = D,
-//                              then A * S(B) = D
-//
-// The inductive step encodes the Peano axiom: a * S(b) = a*b + a.
-// Each step requires BOTH a multiplication witness AND a sum witness.
-
-// Theorem: 2 * 0 = 0
-assertEqual(TimesZero<N2>.Total.self, N0.self)
-
-// Theorem: 2 * 1 = 2
-// Step 1: 2 * 0 = 0 (base)
-// Step 2: 0 + 2 = 2 (sum witness), so 2 * S(0) = 2, i.e. 2 * 1 = 2
-typealias Mul2x0 = TimesZero<N2>
-typealias Add0p2 = PlusSucc<PlusSucc<PlusZero<N0>>>
-typealias Mul2x1 = TimesSucc<Mul2x0, Add0p2>
-assertEqual(Mul2x1.Total.self, N2.self)
-
-// Theorem: 2 * 2 = 4
-// 2 * 1 = 2 (from above), and 2 + 2 = 4, so 2 * 2 = 4
-typealias Add2p2 = PlusSucc<PlusSucc<PlusZero<N2>>>
-typealias Mul2x2 = TimesSucc<Mul2x1, Add2p2>
-assertEqual(Mul2x2.Total.self, N4.self)
-
-// Theorem: 2 * 3 = 6
-// 2 * 2 = 4 (from above), and 4 + 2 = 6, so 2 * 3 = 6
-typealias Add4p2 = PlusSucc<PlusSucc<PlusZero<N4>>>
-typealias Mul2x3 = TimesSucc<Mul2x2, Add4p2>
-assertEqual(Mul2x3.Total.self, N6.self)
-
-// Each multiplication proof is a chain of TimesSucc steps, each composing
-// the previous product with a new sum. The structure mirrors how you'd
-// prove 2*3 = 6 by hand using the Peano axioms.
-
-// MARK: - 4. Comparison witnesses
-
-// The NaturalLessThan protocol witnesses that Left < Right:
-//   ZeroLT<N>      -- proves 0 < S(N)                      (base case)
-//   SuccLT<P>      -- if P proves A < B,                    (inductive step)
-//                     proves S(A) < S(B)
-
-// Theorem: 0 < 1
-// Direct from the base case: 0 < S(0).
-typealias ZeroLtOne = ZeroLT<N0>
-
-// Theorem: 0 < 3
-// Also direct: 0 < S(S(S(0))), i.e. 0 < S(N2).
-typealias ZeroLtThree = ZeroLT<N2>
-
-// Theorem: 2 < 5
-// Peel off successors from both sides until the left reaches zero:
-//   0 < 3  =>  S(0) < S(3)  =>  S(S(0)) < S(S(3))  =>  2 < 5
-typealias TwoLtFive = SuccLT<SuccLT<ZeroLT<N2>>>
-
-// MARK: - 5. Type-level arithmetic
-
-// Writing witness chains by hand is explicit but verbose. Type-level
-// arithmetic provides a more concise notation:
-//
-//   Sum<L, R>.Result     -- the type representing L + R
-//   Product<L, R>.Result -- the type representing L * R
-//
-// These use constrained extensions to compute at the type level.
-// The compiler resolves the Result associated type during compilation.
-
-// Addition:
-assertEqual(Sum<N0, N5>.Result.self, N5.self)
-assertEqual(Sum<N1, N2>.Result.self, N3.self)
-assertEqual(Sum<N2, N3>.Result.self, N5.self)
-assertEqual(Sum<N3, N3>.Result.self, N6.self)
-
-// Multiplication:
-assertEqual(Product<N0, N7>.Result.self, N0.self)
-assertEqual(Product<N1, N5>.Result.self, N5.self)
-assertEqual(Product<N2, N3>.Result.self, N6.self)
-assertEqual(Product<N3, N3>.Result.self, N9.self)
-
-// Commutativity:
-assertEqual(Product<N2, N3>.Result.self, Product<N3, N2>.Result.self)
-
-// MARK: - 6. Inductive multiplication (conditional conformance as induction)
-
-// How does Product<N2, R> work for ANY R, not just specific values?
-// The answer is conditional conformance -- Swift's mechanism for structural
-// induction.
-//
-// The _TimesN2 protocol defines a type-level function via two conformances:
-//
-//   extension Zero: _TimesN2 {
-//       typealias _TimesN2Result = Zero              // base: 2 * 0 = 0
-//   }
-//   extension AddOne: _TimesN2 where Predecessor: _TimesN2 {
-//       typealias _TimesN2Result = AddOne<AddOne<Predecessor._TimesN2Result>>
-//   }                                                // step: 2 * S(n) = S(S(2*n))
-//
-// This is a proof by induction: Zero is the base case, and the AddOne
-// conformance is the inductive step. For any concrete natural N, the
-// compiler chains from AddOne down to Zero, resolving the result.
-//
-// The @ProductConformance macro generates these conformances automatically.
-// Product<N2, R> and Product<N3, R> both work for any R thanks to this.
-
-assertEqual(Product<N2, N4>.Result.self, N8.self)
-assertEqual(Product<N3, N2>.Result.self, N6.self)
-
-// MARK: - 7. Cayley-Dickson construction: higher-dimensional algebras
-
-// The Cayley-Dickson construction builds algebras by pairing elements.
-// Starting from integers (level 0), each level doubles the dimension:
-//
-//   Level 0: Integers          -- 1-dimensional scalars
-//   Level 1: Gaussian integers -- 2D (a + bi), like complex numbers over Z
-//   Level 2: Quaternions       -- 4D (a + bi + cj + dk)
-//   Level 3: Octonions         -- 8D
-//
-// The Algebra marker protocol tags types that participate in this hierarchy.
-// Integer types (Zero, AddOne, SubOne) conform as level-0 scalars.
-// CayleyDickson<Re, Im> pairs two Algebra types to form the next level.
-
-// A Gaussian integer: 3 + 2i
-typealias ThreePlus2i = CayleyDickson<N3, N2>
-
-// Another: 1 + 0i (a real integer embedded in the Gaussian integers)
-typealias OnePlus0i = CayleyDickson<N1, N0>
-
-// A quaternion: (1 + 2i) + (3 + 4i)j, represented as a pair of pairs.
-// This is the quaternion 1 + 2i + 3j + 4k.
-typealias Quat1234 = CayleyDickson<CayleyDickson<N1, N2>, CayleyDickson<N3, N4>>
-
-// The construction is purely structural at the type level -- it encodes
-// the algebraic *shape* (which components exist and how they nest) without
-// computing operations like multiplication or conjugation. This reflects
-// the project's philosophy: the type system encodes structure and proves
-// relationships; it doesn't compute values.
-
-// MARK: - 8. Negative integers and the full hierarchy
-
-// The Integer protocol sits at the root, with Natural and Nonpositive
-// as refinements. SubOne<N> mirrors AddOne<N> on the nonpositive side:
-//
-//   ... SubOne<SubOne<Zero>> = -2
-//       SubOne<Zero>         = -1
-//       Zero                 =  0
-//       AddOne<Zero>         =  1
-//       AddOne<AddOne<Zero>> =  2 ...
-//
-// Zero conforms to BOTH Natural and Nonpositive -- it's the unique element
-// at the intersection, just as 0 is both nonneg and nonpos.
-
-typealias Neg1 = SubOne<Zero>
-typealias Neg2 = SubOne<Neg1>
-
-// The Successor/Predecessor associated types thread through the hierarchy:
-assertEqual(Zero.Successor.self, N1.self)
-assertEqual(N1.Successor.self, N2.self)
-assertEqual(Zero.Predecessor.self, Neg1.self)
-
-// MARK: - 9. Continued fractions and pi (macro-generated proof)
+// MARK: - 3. Continued fractions and pi (macro-generated proof)
 
 // Two classical formulas approximate pi from opposite directions:
 //
@@ -299,7 +137,7 @@ assertEqual(PiProof._LS4.Q.self, N105.self)
 // Since both sequences converge, and their values agree, they converge to
 // the same limit: pi.
 
-// MARK: - 10. Wallis product (macro-generated proof)
+// MARK: - 4. Wallis product (macro-generated proof)
 
 // The Wallis product for pi/2:
 //   pi/2 = prod_{k=1}^{inf} (2k)^2 / ((2k-1)(2k+1))
@@ -330,24 +168,7 @@ assertEqual(WallisProof._W0.Q.self, N1.self)
 assertEqual(WallisProof._W1.P.self, N4.self)
 assertEqual(WallisProof._W1.Q.self, N3.self)
 
-// MARK: - 11. Non-constant base case: Seed<A>
-
-// The _TimesN2 pattern has a constant base case: Zero._TimesN2Result = Zero.
-// By introducing Seed<A> — a parameterized type that conforms to Natural —
-// we get a non-constant base case: Seed<A>._Sum = A.
-// AddOne chains on top of Seed<A> then compute A + B via _InductiveAdd.
-
-assertEqual(_Exp_5p0._Sum.self, N5.self)  // 5 + 0 = 5
-assertEqual(_Exp_7p1._Sum.self, N8.self)  // 7 + 1 = 8
-assertEqual(_Exp_3p2._Sum.self, N5.self)  // 3 + 2 = 5
-
-// The base case is genuinely non-constant: different Seed<A> values
-// produce different results through the same _InductiveAdd conformance.
-assertEqual(Seed<N0>._Sum.self, N0.self)
-assertEqual(Seed<N9>._Sum.self, N9.self)
-assertEqual(AddOne<AddOne<AddOne<Seed<N4>>>>._Sum.self, N7.self)  // 4 + 3 = 7
-
-// MARK: - 12. Fibonacci at the type level (macro-generated proof)
+// MARK: - 5. Fibonacci at the type level (macro-generated proof)
 
 // The FibVerified protocol uses a where clause on its SumWitness
 // associated type to force Next == Prev + Current. Each FibStep
@@ -371,7 +192,7 @@ assertEqual(FibProof._Fib4.Current.self, N3.self)  // F(4) = 3
 assertEqual(FibProof._Fib5.Current.self, N5.self)  // F(5) = 5
 assertEqual(FibProof._Fib6.Current.self, N8.self)  // F(6) = 8
 
-// MARK: - 13. Golden ratio and Fibonacci (macro-generated proof)
+// MARK: - 6. Golden ratio and Fibonacci (macro-generated proof)
 
 // The golden ratio phi = (1 + sqrt(5))/2 has the simplest continued fraction:
 //   phi = [1; 1, 1, 1, ...]
@@ -402,7 +223,7 @@ assertEqual(GoldenRatioProof._CF4.Q.self, N5.self)   // k_4 = 5 = F(5)
 assertEqual(GoldenRatioProof._CF5.P.self, N13.self)  // h_5 = 13 = F(7)
 assertEqual(GoldenRatioProof._CF5.Q.self, N8.self)   // k_5 = 8 = F(6)
 
-// MARK: - 14. sqrt(2) CF and matrix construction (macro-generated proof)
+// MARK: - 7. sqrt(2) CF and matrix construction (macro-generated proof)
 
 // The continued fraction for sqrt(2) is [1; 2, 2, 2, ...]:
 //   sqrt(2) = 1 + 1/(2 + 1/(2 + 1/(2 + ...)))
@@ -441,7 +262,7 @@ assertEqual(Sqrt2Proof._MAT2.B.self, N5.self)   // MAT2 top-right = k_2 = 5
 assertEqual(Sqrt2Proof._MAT3.A.self, N17.self)  // MAT3 top-left = h_3 = 17
 assertEqual(Sqrt2Proof._MAT3.B.self, N12.self)  // MAT3 top-right = k_3 = 12
 
-// MARK: - 15. Universal addition theorems (structural induction)
+// MARK: - 8. Universal addition theorems (structural induction)
 //
 // Unlike the proofs above (which verify specific values), these theorems
 // hold for ALL natural numbers. The proof is conditional conformance:
@@ -516,7 +337,7 @@ assertEqual(ThreePlusThree.Commuted.Left.self, N3.self)
 assertEqual(ThreePlusThree.Commuted.Right.self, N3.self)
 assertEqual(ThreePlusThree.Commuted.Total.self, N6.self)
 
-// MARK: - 16. Associativity of addition (ProofSeed)
+// MARK: - 9. Associativity of addition (ProofSeed)
 //
 // Associativity -- (a + b) + c = a + (b + c) -- is a binary theorem: it
 // requires TWO addition proofs (one for a+b, one for the result plus c).
@@ -567,13 +388,13 @@ assertEqual(Assoc2p3p2.AssocProof.Total.self, N7.self)      // d + c = 5 + 2 = 7
 typealias FivePlusTwo = PlusSucc<PlusSucc<PlusZero<N5>>>
 assertEqual(Assoc2p3p2.AssocProof.Total.self, FivePlusTwo.Total.self)
 
-// MARK: - 17. Universal multiplication theorems (structural induction)
+// MARK: - 10. Universal multiplication theorems (structural induction)
 //
-// TimesSucc has where clauses that trigger rewrite system explosion when
-// composed in inductive protocols. The flat encoding (TimesTick/TimesGroup)
-// decomposes each multiplication step into individual successor operations,
-// like PlusSucc does for addition. The two encodings coexist -- both
-// conform to NaturalProduct.
+// The NaturalProduct protocol witnesses Left * Right = Total. Two encodings
+// exist: TimesSucc (compositional, but its where clauses trigger rewrite
+// system explosion in inductive contexts) and the flat encoding
+// (TimesTick/TimesGroup) used here. The flat encoding decomposes each step
+// into primitives without where clauses, enabling universal theorems.
 
 // -- Flat multiplication proofs --
 // For a * b, we need b groups of a ticks each.
@@ -757,7 +578,7 @@ assertEqual(MulComm5._Fwd2.Right.self, N2.self)
 assertEqual(MulComm5._Rev2.Left.self, N2.self)   // 2 * 5
 assertEqual(MulComm5._Rev2.Right.self, N5.self)
 
-// MARK: - 18. Coinductive streams for irrational numbers
+// MARK: - 11. Coinductive streams for irrational numbers
 //
 // The proofs above represent irrational numbers through bounded-depth
 // convergent chains (macro-generated). Coinductive streams provide a
@@ -832,7 +653,7 @@ assertEqual(PhiCF.Head.self, GoldenRatioProof._CF0.P.self)    // both N1
 // Sqrt2: Sqrt2CF.Head = 1, matching [1; 2, 2, ...]
 assertEqual(Sqrt2CF.Head.self, Sqrt2Proof._CF0.P.self)         // both N1
 
-// MARK: - 19. Distributivity of multiplication over addition
+// MARK: - 12. Distributivity of multiplication over addition
 //
 // Distributivity -- a * (b + c) = a*b + a*c -- bridges the sum and product
 // witness systems. The flat encoding makes it natural: a * (b + c) has
@@ -906,36 +727,35 @@ assertEqual(Distr2x2p3.DistrSum.Total.self, N10.self)   // 4 + 6 = 10
 
 useDistributivity(Distr2x2p3.self)
 
-// MARK: - 20. Algebraic identity: n*(n+2) + 1 = (n+1)^2
+// MARK: - 13. Number-theoretic identities
 //
-// The Wallis product uses the factor correspondence (2k-1)(2k+1) + 1 = (2k)^2
-// at each step. This is an instance of the universal algebraic identity
-// n*(n+2) + 1 = (n+1)^2 -- the "difference of squares" identity.
+// Distributivity and SuccLeftMul combine to prove algebraic identities that
+// explain WHY numerical correspondences hold, not just THAT they hold.
 //
-// The algebraic reason it holds: both sides decompose via a shared base n*(n+1).
-//   (n+1)^2     = n*(n+1) + (n+1)    [SuccLeftMul: S(n) * (n+1) = n*(n+1) + (n+1)]
-//   n*(n+2)     = n*((n+1)+1)
-//               = n*(n+1) + n*1
-//               = n*(n+1) + n         [distributivity + MulRightOne]
+// Difference of squares: n*(n+2) + 1 = (n+1)^2
+// Both sides decompose via a shared base n*(n+1):
+//   (n+1)^2     = n*(n+1) + (n+1)    [SuccLeftMul]
+//   n*(n+2)     = n*((n+1)+1) = n*(n+1) + n  [distributivity + MulRightOne]
 //   Difference  = (n+1) - n = 1
 //
-// Both share n*(n+1) as a common term. The remainders differ by exactly 1.
-// Below we demonstrate this at n=1 and n=2 using SuccLeftMul and MulDistributive.
+// Cassini identity: F(n-1)*F(n+1) - F(n)^2 = (-1)^n
+// The key step uses distributivity:
+//   F(n+1)*F(n-1) = (F(n)+F(n-1))*F(n-1) = F(n)*F(n-1) + F(n-1)^2
+// This relates the cross-product at step n to the square and cross-product
+// at step n-1. The two identities are connected: Cassini at odd n IS
+// difference-of-squares for appropriate values of n.
 
-// -- n = 1: 1*3 + 1 = 4 = 2*2 --
-// Shared base: 1*2 = 2  (FlatMul1x2 below)
-// (n+1)^2 = 2*2: FlatMul1x2.Distributed witnesses 2*2 = 1*2 + 2 = 2 + 2 = 4
-// n*(n+2) = 1*3: ProductSeed<FlatMul1x2> + 1 group of 1 tick = 1*(2+1) = 2 + 1 = 3
-
+// -- Auxiliary flat proofs for Left=1 --
 typealias FlatMul1x0 = TimesZero<N1>
 typealias FlatMul1x1 = TimesGroup<TimesTick<FlatMul1x0>>
 typealias FlatMul1x2 = TimesGroup<TimesTick<FlatMul1x1>>
-
 assertEqual(FlatMul1x2.Total.self, N2.self)                      // 1 * 2 = 2
 
+// -- Difference of squares, n = 1: 1*3 + 1 = 4 = 2^2 --
+// Shared base: 1*2 = 2 (FlatMul1x2)
 // SuccLeftMul: 1*2 = 2 => 2*2 = 2 + 2 = 4
-assertEqual(FlatMul1x2.Distributed.Left.self, N2.self)           // S(1) = 2
-assertEqual(FlatMul1x2.Distributed.Right.self, N2.self)          // right = 2
+assertEqual(FlatMul1x2.Distributed.Left.self, N2.self)
+assertEqual(FlatMul1x2.Distributed.Right.self, N2.self)
 assertEqual(FlatMul1x2.Distributed.Total.self, N4.self)          // 2*2 = 4
 
 // Distributivity: 1*(2+1) = 1*2 + 1*1 = 2 + 1 = 3
@@ -947,18 +767,11 @@ assertEqual(Distr1x2p1.DistrSum.Total.self, N3.self)             // 2 + 1 = 3
 
 // The identity: 1*3 + 1 = 4 = 2*2
 typealias DiffSq1 = PlusSucc<PlusZero<N3>>                       // 3 + 1 = 4
-assertEqual(DiffSq1.Total.self, FlatMul1x2.Distributed.Total.self)  // 4 = 4 ✓
+assertEqual(DiffSq1.Total.self, FlatMul1x2.Distributed.Total.self)  // 4 = 4
 
-// -- n = 2: 2*4 + 1 = 9 = 3*3 --
-// Shared base: 2*3 = 6  (FlatMul2x3 from section 17)
-// (n+1)^2 = 3*3: FlatMul2x3.Distributed witnesses 3*3 = 2*3 + 3 = 6 + 3 = 9
-// n*(n+2) = 2*4: ProductSeed<FlatMul2x3> + 1 group of 2 ticks = 2*(3+1) = 6 + 2 = 8
-
-// SuccLeftMul: 2*3 = 6 => 3*3 = 6 + 3 = 9
-assertEqual(FlatMul2x3.Distributed.Left.self, N3.self)           // S(2) = 3
-assertEqual(FlatMul2x3.Distributed.Right.self, N3.self)          // right = 3
-assertEqual(FlatMul2x3.Distributed.Total.self, N9.self)          // 3*3 = 9
-
+// -- Difference of squares, n = 2: 2*4 + 1 = 9 = 3^2 --
+// Shared base: 2*3 = 6 (FlatMul2x3 from section 10)
+// SuccLeftMul: 2*3 = 6 => 3*3 = 6 + 3 = 9 (verified in section 10)
 // Distributivity: 2*(3+1) = 2*3 + 2*1 = 6 + 2 = 8
 typealias Distr2x3p1 = TimesGroup<TimesTick<TimesTick<ProductSeed<FlatMul2x3>>>>
 assertEqual(Distr2x3p1.Total.self, N8.self)                      // 2*4 = 8
@@ -968,31 +781,10 @@ assertEqual(Distr2x3p1.DistrSum.Total.self, N8.self)             // 6 + 2 = 8
 
 // The identity: 2*4 + 1 = 9 = 3*3
 typealias DiffSq2 = PlusSucc<PlusZero<N8>>                       // 8 + 1 = 9
-assertEqual(DiffSq2.Total.self, FlatMul2x3.Distributed.Total.self)  // 9 = 9 ✓
+assertEqual(DiffSq2.Total.self, FlatMul2x3.Distributed.Total.self)  // 9 = 9
 
-// Both decompositions share FlatMul2x3 (the proof of 2*3 = 6):
-//   3*3 = 6 + 3  (SuccLeftMul adds Right = 3)
-//   2*4 = 6 + 2  (distributivity adds 2 ticks = one group of Left = 2)
-// The remainders (3 vs 2) differ by 1 -- that's the structural reason.
-
-// MARK: - 21. Cassini identity for Fibonacci numbers
-//
-// The Cassini identity is a number-theoretic theorem about Fibonacci:
-//   F(n-1)*F(n+1) - F(n)^2 = (-1)^n
-//
-// In naturals (avoiding negatives), the sign alternates which side gets +1:
-//   Even n: F(n-1)*F(n+1) = F(n)^2 + 1
-//   Odd n:  F(n-1)*F(n+1) + 1 = F(n)^2
-//
-// The key step uses distributivity:
-//   F(n+1)*F(n-1) = (F(n) + F(n-1)) * F(n-1)    [Fibonacci recurrence]
-//                 = F(n)*F(n-1) + F(n-1)^2        [distributivity]
-//
-// This relates the cross-product at step n to the square and cross-product
-// at step n-1. It's a theorem ABOUT Fibonacci, not just a computation OF it.
-
-// -- n = 2 (even): F(1)*F(3) = F(2)^2 + 1 => 1*2 = 1 + 1 => 2 = 2 --
-// F(1)=1, F(2)=1, F(3)=2
+// -- Cassini n = 2 (even): F(1)*F(3) = F(2)^2 + 1 --
+// F(1)=1, F(2)=1, F(3)=2.  1*2 = 1*1 + 1 => 2 = 1 + 1
 
 // F(2)^2 = 1*1 = 1 (MulRightOne)
 assertEqual(N1.TimesOneProof.Total.self, N1.self)                 // 1*1 = 1
@@ -1004,49 +796,28 @@ assertEqual(N2.OneTimesProof.Total.self, N2.self)                 // 1*2 = 2
 typealias Cassini2 = PlusSucc<PlusZero<N1>>
 assertEqual(Cassini2.Total.self, N2.OneTimesProof.Total.self)     // F(2)^2 + 1 = F(1)*F(3)
 
-// -- n = 3 (odd): F(2)*F(4) + 1 = F(3)^2 => 1*3 + 1 = 4 = 2*2 --
-// F(2)=1, F(3)=2, F(4)=3
-// This is also the n=1 difference-of-squares identity!
+// -- Cassini n = 3 (odd): F(2)*F(4) + 1 = F(3)^2 --
+// F(2)=1, F(3)=2, F(4)=3.  1*3 + 1 = 4 = 2*2
+// This IS diff-of-squares n=1: DiffSq1 proves 3 + 1 = 4 = 2^2.
+// Distr1x2p1 decomposes F(4)*F(2) = (F(3)+F(2))*F(2) = F(3)*F(2) + F(2)^2.
 
-// F(3)^2 = 2*2 = 4 (FlatMul2x2 from section 17)
-assertEqual(FlatMul2x2.Total.self, N4.self)                       // 2*2 = 4
+// -- Cassini n = 4 (even): F(3)*F(5) = F(4)^2 + 1 --
+// F(3)=2, F(4)=3, F(5)=5.  2*5 = 9 + 1 = 10
+//
+// F(4)^2 = 3*3 = 9 (FlatMul2x3.Distributed from section 10)
+// Distributive decomposition via Distr2x2p3 from section 12:
+//   F(5)*F(3) = (F(4)+F(3))*F(3) = F(4)*F(3) + F(3)^2 = 6 + 4 = 10
 
-// F(2)*F(4) = 1*3 = 3 (Distr1x2p1 from section 20)
-assertEqual(Distr1x2p1.Total.self, N3.self)                       // 1*3 = 3
-
-// Distributive decomposition: F(4)*F(2) = (F(3)+F(2))*F(2) = F(3)*F(2) + F(2)^2
-// = (3)*1 = (2+1)*1 = 2*1 + 1*1 = 2 + 1 = 3
-// Using Distr1x2p1.DistrSum: Left=2 (F(3)*F(2)), Right=1 (F(2)^2), Total=3
-assertEqual(Distr1x2p1.DistrSum.Left.self, N2.self)               // F(3)*F(2) = 2
-assertEqual(Distr1x2p1.DistrSum.Right.self, N1.self)              // F(2)^2 = 1
-
-// 3 + 1 = 4
-typealias Cassini3 = PlusSucc<PlusZero<N3>>
-assertEqual(Cassini3.Total.self, FlatMul2x2.Total.self)           // F(2)*F(4) + 1 = F(3)^2
-
-// -- n = 4 (even): F(3)*F(5) = F(4)^2 + 1 => 2*5 = 9 + 1 = 10 --
-// F(3)=2, F(4)=3, F(5)=5
-
-// F(4)^2 = 3*3: use SuccLeftMul on FlatMul2x3
-assertEqual(FlatMul2x3.Distributed.Total.self, N9.self)           // 3*3 = 9
-
-// F(3)*F(5) = 2*5 = 10: 5 groups of 2 ticks
+// F(3)*F(5) = 2*5 = 10
 typealias FlatMul2x4 = TimesGroup<TimesTick<TimesTick<FlatMul2x3>>>
 typealias FlatMul2x5 = TimesGroup<TimesTick<TimesTick<FlatMul2x4>>>
 assertEqual(FlatMul2x5.Total.self, N10.self)                      // 2*5 = 10
 
-// Distributive decomposition: F(5)*F(3) = (F(4)+F(3))*F(3) = F(4)*F(3) + F(3)^2
-// 5*2 = (3+2)*2. Rewrite as: 2*(3+2) = 2*3 + 2*2 = 6 + 4 = 10
-// (Using commutativity of the natural number product, not the proof)
-assertEqual(Distr2x2p3.DistrSum.Left.self, N4.self)               // 2*2 = F(3)^2 = 4
-assertEqual(Distr2x2p3.DistrSum.Right.self, N6.self)              // 2*3 = F(4)*F(3) = 6
-assertEqual(Distr2x2p3.DistrSum.Total.self, N10.self)             // 4 + 6 = 10
-
-// 9 + 1 = 10
+// F(4)^2 + 1 = F(3)*F(5): 9 + 1 = 10
 typealias Cassini4 = PlusSucc<PlusZero<N9>>
-assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // F(4)^2 + 1 = F(3)*F(5)
+assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // 9 + 1 = 10 = 2*5
 
-// MARK: - 22. CF convergent determinant identity for sqrt(2)
+// MARK: - 14. CF convergent determinant identity for sqrt(2)
 //
 // The convergent determinant identity is a structural invariant of continued
 // fractions: h_n * k_{n-1} - h_{n-1} * k_n = (-1)^{n+1}
@@ -1055,7 +826,7 @@ assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // F(4)^2 + 1 
 //   Odd n:  h_n * k_{n-1} = h_{n-1} * k_n + 1
 //   Even n: h_{n-1} * k_n = h_n * k_{n-1} + 1
 //
-// For the golden ratio, this reduces to the Cassini identity (Section 21).
+// For the golden ratio, this reduces to the Cassini identity (section 13).
 // For sqrt(2), with convergents h_0/k_0 = 1/1, h_1/k_1 = 3/2, h_2/k_2 = 7/5:
 
 // -- n = 1 (odd, determinant = +1): h_1*k_0 = h_0*k_1 + 1 => 3*1 = 1*2 + 1 => 3 = 3 --
@@ -1102,7 +873,7 @@ assertEqual(Sqrt2DetWit2.Total.self, Sqrt2Det_3x5.Total.self)       // 15 = 15
 assertEqual(Sqrt2Det_3x5.Right.self, Sqrt2Proof._CF2.Q.self)        // k_2 = 5
 assertEqual(Sqrt2Det_7x2.Left.self, Sqrt2Proof._CF2.P.self)         // h_2 = 7
 
-// MARK: - 23. Wallis-Leibniz denominator correspondence
+// MARK: - 15. Wallis-Leibniz denominator correspondence
 //
 // The codebase proves three pi constructions independently:
 //   Brouncker CF (convergents h_k/k_k), Leibniz series (partial sums S_k),
@@ -1169,9 +940,9 @@ assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)    // 15 = 15 (Brouncker-L
 // theorems (left zero annihilation, successor-left multiplication,
 // per-A commutativity -- including macro-generated proofs for N4 and N5 --
 // right and left multiplicative identity, and distributivity over
-// addition), number-theoretic identities (Cassini identity for Fibonacci,
-// CF convergent determinant identity for sqrt(2)), the Wallis-Leibniz
-// denominator correspondence (connecting all three pi representations),
-// and coinductive streams for irrational numbers (PhiCF, Sqrt2CF with
-// universal unfold theorems) -- all without executing a single
-// computation at runtime.
+// addition), number-theoretic identities (difference-of-squares, Cassini
+// identity for Fibonacci, CF convergent determinant identity for sqrt(2)),
+// the Wallis-Leibniz denominator correspondence (connecting all three pi
+// representations), and coinductive streams for irrational numbers (PhiCF,
+// Sqrt2CF with universal unfold theorems) -- all without executing a
+// single computation at runtime.

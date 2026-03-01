@@ -31,8 +31,7 @@ Sources/
     ProductChainGenerator.swift              -- shared product witness chain generator (used by Pi, Wallis macros; universal factor optimization for factors 1 and 2)
     Diagnostics.swift                        -- PeanoDiagnostic enum
   AbuseOfNotationClient/                     -- SPM executable: witness-based proofs
-    main.swift                               -- witness constructions verified by compilation, type-level arithmetic assertions
-    Experiment.swift                         -- Seed<A>, _InductiveAdd, _Rebase experiments
+    main.swift                               -- 15-section tutorial: witness constructions verified by compilation
 Tests/
   AbuseOfNotationMacrosTests/                -- macro expansion tests
     ProductConformanceMacroTests.swift
