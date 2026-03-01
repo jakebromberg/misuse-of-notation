@@ -37,17 +37,13 @@ final class GoldenRatioProofMacroTests: XCTestCase {
 
                 typealias _Fib3 = FibStep<_Fib2, _FibW3>
 
-                typealias _M1x0 = TimesZero<AddOne<Zero>>
-
-                typealias _M1x1 = TimesSucc<_M1x0, PlusSucc<PlusZero<Zero>>>
-
                 typealias _CF0 = GCFConv0<AddOne<Zero>>
 
                 typealias _CFS_H1 = PlusSucc<PlusZero<AddOne<Zero>>>
 
                 typealias _CFS_K1 = PlusZero<AddOne<Zero>>
 
-                typealias _CF1 = GCFConvStep<_CF0, _M1x1, _M1x1, _CFS_H1, _M1x1, _M1x0, _CFS_K1>
+                typealias _CF1 = GCFConvStep<_CF0, AddOne<Zero>.OneTimesProof, AddOne<Zero>.OneTimesProof, _CFS_H1, AddOne<Zero>.OneTimesProof, Zero.OneTimesProof, _CFS_K1>
 
                 func _goldenRatioCorrespondenceCheck() {
                     assertEqual(_CF0.P.self, _Fib2.Current.self)

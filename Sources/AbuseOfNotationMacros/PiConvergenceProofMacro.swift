@@ -99,14 +99,14 @@ public struct PiConvergenceProofMacro: MemberMacro {
             let b = 2
 
             // Product witness references
-            let bhp = "_M\(b)x\(H[i])"       // b * h_{i-1}
-            let ahpp = "_M\(a)x\(H[i - 1])"  // a_i * h_{i-2}
-            let bkp = "_M\(b)x\(K[i])"       // b * k_{i-1}
+            let bhp = ProductChainGenerator.name(factor: b, multiplier: H[i])
+            let ahpp = ProductChainGenerator.name(factor: a, multiplier: H[i - 1])
+            let bkp = ProductChainGenerator.name(factor: b, multiplier: K[i])
             let akpp: String
             if K[i - 1] == 0 {
-                akpp = "_M\(a)x0"             // a_i * k_{-1} = a_i * 0
+                akpp = ProductChainGenerator.name(factor: a, multiplier: 0)
             } else {
-                akpp = "_M\(a)x\(K[i - 1])"  // a_i * k_{i-2}
+                akpp = ProductChainGenerator.name(factor: a, multiplier: K[i - 1])
             }
 
             // Sum witnesses for h_i and k_i
@@ -136,8 +136,8 @@ public struct PiConvergenceProofMacro: MemberMacro {
             let p = LP[k - 2]
             let q = LQ[k - 2]
 
-            let pxd = "_M\(p)x\(d)"
-            let qxd = "_M\(q)x\(d)"
+            let pxd = ProductChainGenerator.name(factor: p, multiplier: d)
+            let qxd = ProductChainGenerator.name(factor: q, multiplier: d)
 
             if k % 2 == 0 {
                 // Subtraction: new_p = p*d - q, witnessed by new_p + q = p*d

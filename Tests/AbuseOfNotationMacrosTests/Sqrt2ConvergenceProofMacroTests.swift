@@ -25,21 +25,13 @@ final class Sqrt2ConvergenceProofMacroTests: XCTestCase {
             expandedSource: """
             enum Sqrt2Proof {
 
-                typealias _M1x0 = TimesZero<AddOne<Zero>>
-
-                typealias _M1x1 = TimesSucc<_M1x0, PlusSucc<PlusZero<Zero>>>
-
-                typealias _M2x0 = TimesZero<AddOne<AddOne<Zero>>>
-
-                typealias _M2x1 = TimesSucc<_M2x0, PlusSucc<PlusSucc<PlusZero<Zero>>>>
-
                 typealias _CF0 = GCFConv0<AddOne<Zero>>
 
                 typealias _CFS_H1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
 
                 typealias _CFS_K1 = PlusZero<AddOne<AddOne<Zero>>>
 
-                typealias _CF1 = GCFConvStep<_CF0, _M2x1, _M1x1, _CFS_H1, _M2x1, _M1x0, _CFS_K1>
+                typealias _CF1 = GCFConvStep<_CF0, AddOne<Zero>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, _CFS_H1, AddOne<Zero>.OneTimesProof.Distributed, Zero.OneTimesProof, _CFS_K1>
 
                 typealias _MAT0 = Mat2<AddOne<Zero>, AddOne<Zero>, AddOne<Zero>, Zero>
 
@@ -47,7 +39,7 @@ final class Sqrt2ConvergenceProofMacroTests: XCTestCase {
 
                 typealias _MATS_BD1 = PlusZero<AddOne<AddOne<Zero>>>
 
-                typealias _MAT1 = Sqrt2MatStep<_MAT0, _M2x1, _MATS_AC1, _M2x1, _MATS_BD1>
+                typealias _MAT1 = Sqrt2MatStep<_MAT0, AddOne<Zero>.OneTimesProof.Distributed, _MATS_AC1, AddOne<Zero>.OneTimesProof.Distributed, _MATS_BD1>
 
                 func _sqrt2CorrespondenceCheck() {
                     assertEqual(_MAT0.A.self, _CF0.P.self)

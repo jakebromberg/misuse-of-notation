@@ -24,23 +24,9 @@ final class WallisProductProofMacroTests: XCTestCase {
             expandedSource: """
             enum WallisProof {
 
-                typealias _M1x0 = TimesZero<AddOne<Zero>>
-
-                typealias _M1x1 = TimesSucc<_M1x0, PlusSucc<PlusZero<Zero>>>
-
-                typealias _M1x2 = TimesSucc<_M1x1, PlusSucc<PlusZero<AddOne<Zero>>>>
-
-                typealias _M1x3 = TimesSucc<_M1x2, PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>>
-
-                typealias _M2x0 = TimesZero<AddOne<AddOne<Zero>>>
-
-                typealias _M2x1 = TimesSucc<_M2x0, PlusSucc<PlusSucc<PlusZero<Zero>>>>
-
-                typealias _M2x2 = TimesSucc<_M2x1, PlusSucc<PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>>>
-
                 typealias _W0 = WallisBase
 
-                typealias _W1 = WallisStep<_W0, _M1x2, _M2x2, _M1x1, _M1x3>
+                typealias _W1 = WallisStep<_W0, AddOne<AddOne<Zero>>.OneTimesProof, AddOne<AddOne<Zero>>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof>
 
                 typealias _WFC1 = PlusSucc<PlusZero<AddOne<AddOne<AddOne<Zero>>>>>
 

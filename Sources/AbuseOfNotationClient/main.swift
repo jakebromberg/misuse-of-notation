@@ -1046,6 +1046,62 @@ assertEqual(Distr2x2p3.DistrSum.Total.self, N10.self)             // 4 + 6 = 10
 typealias Cassini4 = PlusSucc<PlusZero<N9>>
 assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // F(4)^2 + 1 = F(3)*F(5)
 
+// MARK: - 22. CF convergent determinant identity for sqrt(2)
+//
+// The convergent determinant identity is a structural invariant of continued
+// fractions: h_n * k_{n-1} - h_{n-1} * k_n = (-1)^{n+1}
+//
+// In naturals (avoiding subtraction), this becomes:
+//   Odd n:  h_n * k_{n-1} = h_{n-1} * k_n + 1
+//   Even n: h_{n-1} * k_n = h_n * k_{n-1} + 1
+//
+// For the golden ratio, this reduces to the Cassini identity (Section 21).
+// For sqrt(2), with convergents h_0/k_0 = 1/1, h_1/k_1 = 3/2, h_2/k_2 = 7/5:
+
+// -- n = 1 (odd, determinant = +1): h_1*k_0 = h_0*k_1 + 1 => 3*1 = 1*2 + 1 => 3 = 3 --
+//
+// h_1*k_0 = 3*1: chain SuccLeftMul from 1*1 = 1
+typealias Sqrt2Det_3x1 = N1.OneTimesProof.Distributed.Distributed
+assertEqual(Sqrt2Det_3x1.Left.self, N3.self)                        // h_1 = 3
+assertEqual(Sqrt2Det_3x1.Right.self, N1.self)                       // k_0 = 1
+assertEqual(Sqrt2Det_3x1.Total.self, N3.self)                       // 3*1 = 3
+
+// h_0*k_1 = 1*2
+typealias Sqrt2Det_1x2 = N2.OneTimesProof
+assertEqual(Sqrt2Det_1x2.Left.self, N1.self)                        // h_0 = 1
+assertEqual(Sqrt2Det_1x2.Right.self, N2.self)                       // k_1 = 2
+assertEqual(Sqrt2Det_1x2.Total.self, N2.self)                       // 1*2 = 2
+
+// The identity: h_0*k_1 + 1 = h_1*k_0
+typealias Sqrt2DetWit1 = PlusSucc<PlusZero<N2>>                     // 2 + 1 = 3
+assertEqual(Sqrt2DetWit1.Total.self, Sqrt2Det_3x1.Total.self)       // 3 = 3
+
+// Connect to macro-generated convergents:
+assertEqual(Sqrt2Det_3x1.Left.self, Sqrt2Proof._CF1.P.self)         // h_1 = 3
+assertEqual(Sqrt2Det_1x2.Right.self, Sqrt2Proof._CF1.Q.self)        // k_1 = 2
+
+// -- n = 2 (even, determinant = -1): h_1*k_2 = h_2*k_1 + 1 => 3*5 = 7*2 + 1 => 15 = 15 --
+//
+// h_1*k_2 = 3*5: chain SuccLeftMul from 1*5 = 5
+typealias Sqrt2Det_3x5 = N5.OneTimesProof.Distributed.Distributed
+assertEqual(Sqrt2Det_3x5.Left.self, N3.self)                        // h_1 = 3
+assertEqual(Sqrt2Det_3x5.Right.self, N5.self)                       // k_2 = 5
+assertEqual(Sqrt2Det_3x5.Total.self, N15.self)                      // 3*5 = 15
+
+// h_2*k_1 = 7*2: chain SuccLeftMul from 1*2 = 2 through 6 Distributed steps
+typealias Sqrt2Det_7x2 = Sqrt2Det_1x2.Distributed.Distributed.Distributed.Distributed.Distributed.Distributed
+assertEqual(Sqrt2Det_7x2.Left.self, N7.self)                        // h_2 = 7
+assertEqual(Sqrt2Det_7x2.Right.self, N2.self)                       // k_1 = 2
+assertEqual(Sqrt2Det_7x2.Total.self, AddOne<N13>.self)              // 7*2 = 14
+
+// The identity: h_2*k_1 + 1 = h_1*k_2
+typealias Sqrt2DetWit2 = PlusSucc<PlusZero<AddOne<N13>>>            // 14 + 1 = 15
+assertEqual(Sqrt2DetWit2.Total.self, Sqrt2Det_3x5.Total.self)       // 15 = 15
+
+// Connect to macro-generated convergents:
+assertEqual(Sqrt2Det_3x5.Right.self, Sqrt2Proof._CF2.Q.self)        // k_2 = 5
+assertEqual(Sqrt2Det_7x2.Left.self, Sqrt2Proof._CF2.P.self)         // h_2 = 7
+
 // MARK: - Epilogue
 //
 // If you're reading this, the program compiled and exited cleanly. That
@@ -1060,6 +1116,7 @@ assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // F(4)^2 + 1 
 // theorems (left zero annihilation, successor-left multiplication,
 // per-A commutativity -- including macro-generated proofs for N4 and N5 --
 // right and left multiplicative identity, and distributivity over
-// addition), and coinductive streams for irrational
-// numbers (PhiCF, Sqrt2CF with universal unfold theorems) -- all without
-// executing a single computation at runtime.
+// addition), number-theoretic identities (Cassini identity for Fibonacci,
+// CF convergent determinant identity for sqrt(2)), and coinductive
+// streams for irrational numbers (PhiCF, Sqrt2CF with universal unfold
+// theorems) -- all without executing a single computation at runtime.

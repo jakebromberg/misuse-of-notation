@@ -62,34 +62,16 @@ public struct GoldenRatioProofMacro: MemberMacro {
             decls.append("typealias _Fib\(raw: String(i)) = FibStep<\(raw: prevName), _FibW\(raw: String(i))>")
         }
 
-        // --- Generate product witness chain for factor=1 ---
-        var gen = ProductChainGenerator()
-        for i in 1...depth {
-            // CF needs: b*h_{i-1} = 1*H[i], a*h_{i-2} = 1*H[i-1]
-            //           b*k_{i-1} = 1*K[i], a*k_{i-2} = 1*K[i-1]
-            gen.need(factor: 1, multiplier: H[i])
-            gen.need(factor: 1, multiplier: H[i - 1])
-            gen.need(factor: 1, multiplier: K[i])
-            if K[i - 1] > 0 {
-                gen.need(factor: 1, multiplier: K[i - 1])
-            }
-        }
-        decls.append(contentsOf: gen.declarations())
-
         // --- Generate CF convergent chain ---
+        // All products use factor=1, handled by MulLeftOne (universal theorem).
         decls.append("typealias _CF0 = GCFConv0<\(raw: peanoTypeName(for: 1))>")
 
         for i in 1...depth {
             // a=1, b=1 for the golden ratio CF
-            let bhp = "_M1x\(H[i])"        // b * h_{i-1} = 1 * H[i]
-            let ahpp = "_M1x\(H[i - 1])"   // a * h_{i-2} = 1 * H[i-1]
-            let bkp = "_M1x\(K[i])"        // b * k_{i-1} = 1 * K[i]
-            let akpp: String
-            if K[i - 1] == 0 {
-                akpp = "_M1x0"
-            } else {
-                akpp = "_M1x\(K[i - 1])"
-            }
+            let bhp = ProductChainGenerator.name(factor: 1, multiplier: H[i])
+            let ahpp = ProductChainGenerator.name(factor: 1, multiplier: H[i - 1])
+            let bkp = ProductChainGenerator.name(factor: 1, multiplier: K[i])
+            let akpp = ProductChainGenerator.name(factor: 1, multiplier: K[i - 1])
 
             // Sum witnesses: h_i = b*h_{i-1} + a*h_{i-2} = H[i] + H[i-1]
             let sumH = plusSuccChain(left: 1 * H[i], right: 1 * H[i - 1])

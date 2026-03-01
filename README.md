@@ -342,6 +342,8 @@ Distributivity combines with SuccLeftMul and MulRightOne to prove algebraic iden
 
 **Cassini identity:** `F(n-1)*F(n+1) - F(n)^2 = (-1)^n`. The key step uses distributivity: `F(n+1)*F(n-1) = (F(n) + F(n-1)) * F(n-1) = F(n)*F(n-1) + F(n-1)^2`. This is the first number-theoretic theorem in the project -- a statement about Fibonacci *structure*, not just Fibonacci *computation*.
 
+**CF convergent determinant identity:** `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}`. This structural invariant holds for all continued fractions. For the golden ratio it reduces to Cassini (since h_n = F(n+2), k_n = F(n+1)). Demonstrated for sqrt(2) at n=1,2: products are built using the universal theorems `MulLeftOne` and `SuccLeftMul.Distributed` -- the same theorems the proof macros now reference instead of generating brute-force chains.
+
 ## Coinductive streams for irrational numbers
 
 The convergent proofs above are bounded-depth: macros generate witness chains for specific values. Coinductive streams provide a complementary representation: the continued fraction coefficient sequence *itself* as a type.

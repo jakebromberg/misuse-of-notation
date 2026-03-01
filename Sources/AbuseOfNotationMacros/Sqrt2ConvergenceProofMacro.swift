@@ -51,40 +51,18 @@ public struct Sqrt2ConvergenceProofMacro: MemberMacro {
             matD.append(prevB)
         }
 
-        // --- Collect needed product chains ---
-        var gen = ProductChainGenerator()
-
-        // CF needs: b=2 times h_{i-1} and k_{i-1}, a=1 times h_{i-2} and k_{i-2}
-        for i in 1...depth {
-            gen.need(factor: 2, multiplier: H[i])       // b * h_{i-1}
-            gen.need(factor: 2, multiplier: K[i])       // b * k_{i-1}
-            gen.need(factor: 1, multiplier: H[i - 1])   // a * h_{i-2}
-            if K[i - 1] > 0 {
-                gen.need(factor: 1, multiplier: K[i - 1])  // a * k_{i-2}
-            }
-        }
-
-        // Matrix needs: 2 * prev.a and 2 * prev.b for each step
-        // (already covered by CF's factor=2 needs since mat.a = H[i+1], mat.b = K[i+1])
-        // But we still need to ensure sum witnesses are available.
-        // The product witnesses for factor=2 cover both CF and matrix.
-
-        var decls: [DeclSyntax] = gen.declarations()
-
         // --- Generate CF convergent chain ---
+        // All products use factors 1 and 2, handled by universal theorems
+        // (MulLeftOne and SuccLeftMul.Distributed).
+        var decls: [DeclSyntax] = []
         decls.append("typealias _CF0 = GCFConv0<\(raw: peanoTypeName(for: 1))>")
 
         for i in 1...depth {
             let b = 2
-            let bhp = "_M\(b)x\(H[i])"       // b * h_{i-1}
-            let ahpp = "_M1x\(H[i - 1])"     // a * h_{i-2} = 1 * H[i-1]
-            let bkp = "_M\(b)x\(K[i])"       // b * k_{i-1}
-            let akpp: String
-            if K[i - 1] == 0 {
-                akpp = "_M1x0"
-            } else {
-                akpp = "_M1x\(K[i - 1])"
-            }
+            let bhp = ProductChainGenerator.name(factor: b, multiplier: H[i])
+            let ahpp = ProductChainGenerator.name(factor: 1, multiplier: H[i - 1])
+            let bkp = ProductChainGenerator.name(factor: b, multiplier: K[i])
+            let akpp = ProductChainGenerator.name(factor: 1, multiplier: K[i - 1])
 
             let bh = b * H[i]
             let ah = 1 * H[i - 1]
