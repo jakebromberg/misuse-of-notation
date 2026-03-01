@@ -344,6 +344,8 @@ Distributivity combines with SuccLeftMul and MulRightOne to prove algebraic iden
 
 **CF convergent determinant identity:** `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}`. This structural invariant holds for all continued fractions. For the golden ratio it reduces to Cassini (since h_n = F(n+2), k_n = F(n+1)). Demonstrated for sqrt(2) at n=1,2: products are built using the universal theorems `MulLeftOne` and `SuccLeftMul.Distributed` -- the same theorems the proof macros now reference instead of generating brute-force chains.
 
+**Wallis-Leibniz denominator correspondence:** `WQ[k] = LQ[k+1] * LQ[k]`. Each Wallis denominator equals the product of two consecutive Leibniz denominators. Leibniz denominators accumulate one odd factor per step (1, 3, 15, 105, ...); Wallis denominators accumulate paired odd factors. The product of consecutive Leibniz denominators telescopes into the Wallis denominator. Since the Brouncker-Leibniz correspondence gives `CF_k.P = LS_{k+1}.Q`, this also yields `WQ[k] = CF_k.P * CF_{k-1}.P` -- a three-way connection between all pi representations. Demonstrated at k=1 (3 = 3\*1) and k=2 (45 = 15\*3), with a bonus exact fraction `W_1 = 2*S_2` (4/3 = 2\*(2/3)).
+
 ## Coinductive streams for irrational numbers
 
 The convergent proofs above are bounded-depth: macros generate witness chains for specific values. Coinductive streams provide a complementary representation: the continued fraction coefficient sequence *itself* as a type.

@@ -1102,6 +1102,59 @@ assertEqual(Sqrt2DetWit2.Total.self, Sqrt2Det_3x5.Total.self)       // 15 = 15
 assertEqual(Sqrt2Det_3x5.Right.self, Sqrt2Proof._CF2.Q.self)        // k_2 = 5
 assertEqual(Sqrt2Det_7x2.Left.self, Sqrt2Proof._CF2.P.self)         // h_2 = 7
 
+// MARK: - 23. Wallis-Leibniz denominator correspondence
+//
+// The codebase proves three pi constructions independently:
+//   Brouncker CF (convergents h_k/k_k), Leibniz series (partial sums S_k),
+//   and the Wallis product (partial products W_k).
+//
+// The missing link: each Wallis denominator equals the product of two
+// consecutive Leibniz denominators.
+//
+//   WQ[k] = LQ[k+1] * LQ[k]
+//
+// Leibniz denominators accumulate one odd factor per step (1, 3, 15, 105, ...),
+// while Wallis denominators accumulate paired odd factors ((2k-1)(2k+1)).
+// The product of consecutive Leibniz denominators telescopes into the Wallis
+// denominator.
+
+// -- k=1: WQ[1] = LQ[2] * LQ[1] = 3 * 1 = 3 --
+
+typealias WallisLeibniz_3x1 = N3.TimesOneProof
+assertEqual(WallisLeibniz_3x1.Left.self, PiProof._LS2.Q.self)      // 3 = 3
+assertEqual(WallisLeibniz_3x1.Right.self, PiProof._LS1.Q.self)     // 1 = 1
+assertEqual(WallisLeibniz_3x1.Total.self, WallisProof._W1.Q.self)  // 3 = 3
+
+// -- Bonus: W_1 = 2 * S_2 (as fractions: 4/3 = 2 * (2/3)) --
+//
+// Numerator: 4 = 2 * 2. Use SuccLeftMul: 1*2 = 2 (OneTimesProof), then
+// S(1)*2 = 2 + 2 = 4 via Distributed.
+typealias WallisLeibniz_2xLS2P = N2.OneTimesProof.Distributed
+assertEqual(WallisLeibniz_2xLS2P.Total.self, WallisProof._W1.P.self)  // 4 = 4
+// Denominator: trivially equal (both are 3).
+assertEqual(WallisProof._W1.Q.self, PiProof._LS2.Q.self)              // 3 = 3
+
+// -- k=2: WQ[2] = LQ[3] * LQ[2] = 15 * 3 = 45 --
+//
+// Chain SuccLeftMul from 1*3 = 3 (OneTimesProof) through 14 Distributed steps.
+// Intermediate milestones: 5*3=15, 10*3=30, 15*3=45.
+typealias WL_1x3 = N3.OneTimesProof                                                                // 1*3 = 3
+typealias WL_5x3 = WL_1x3.Distributed.Distributed.Distributed.Distributed                          // 5*3 = 15
+typealias WL_10x3 = WL_5x3.Distributed.Distributed.Distributed.Distributed.Distributed             // 10*3 = 30
+typealias WL_15x3 = WL_10x3.Distributed.Distributed.Distributed.Distributed.Distributed            // 15*3 = 45
+
+assertEqual(WL_15x3.Left.self, PiProof._LS3.Q.self)      // 15 = 15
+assertEqual(WL_15x3.Right.self, PiProof._LS2.Q.self)     // 3 = 3
+assertEqual(WL_15x3.Total.self, WallisProof._W2.Q.self)  // 45 = 45
+
+// -- Three-way connection via Brouncker CF --
+//
+// The Brouncker-Leibniz correspondence (proved by the macro) gives CF_k.P = LS_{k+1}.Q.
+// So WQ[k] = CF_k.P * CF_{k-1}.P as well.
+assertEqual(PiProof._CF1.P.self, PiProof._LS2.Q.self)    // 3 = 3 (Brouncker-Leibniz at k=1)
+assertEqual(PiProof._CF0.P.self, PiProof._LS1.Q.self)    // 1 = 1 (Brouncker-Leibniz at k=0)
+assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)    // 15 = 15 (Brouncker-Leibniz at k=2)
+
 // MARK: - Epilogue
 //
 // If you're reading this, the program compiled and exited cleanly. That
@@ -1117,6 +1170,8 @@ assertEqual(Sqrt2Det_7x2.Left.self, Sqrt2Proof._CF2.P.self)         // h_2 = 7
 // per-A commutativity -- including macro-generated proofs for N4 and N5 --
 // right and left multiplicative identity, and distributivity over
 // addition), number-theoretic identities (Cassini identity for Fibonacci,
-// CF convergent determinant identity for sqrt(2)), and coinductive
-// streams for irrational numbers (PhiCF, Sqrt2CF with universal unfold
-// theorems) -- all without executing a single computation at runtime.
+// CF convergent determinant identity for sqrt(2)), the Wallis-Leibniz
+// denominator correspondence (connecting all three pi representations),
+// and coinductive streams for irrational numbers (PhiCF, Sqrt2CF with
+// universal unfold theorems) -- all without executing a single
+// computation at runtime.
