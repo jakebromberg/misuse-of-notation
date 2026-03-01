@@ -975,6 +975,77 @@ assertEqual(DiffSq2.Total.self, FlatMul2x3.Distributed.Total.self)  // 9 = 9 ✓
 //   2*4 = 6 + 2  (distributivity adds 2 ticks = one group of Left = 2)
 // The remainders (3 vs 2) differ by 1 -- that's the structural reason.
 
+// MARK: - 21. Cassini identity for Fibonacci numbers
+//
+// The Cassini identity is a number-theoretic theorem about Fibonacci:
+//   F(n-1)*F(n+1) - F(n)^2 = (-1)^n
+//
+// In naturals (avoiding negatives), the sign alternates which side gets +1:
+//   Even n: F(n-1)*F(n+1) = F(n)^2 + 1
+//   Odd n:  F(n-1)*F(n+1) + 1 = F(n)^2
+//
+// The key step uses distributivity:
+//   F(n+1)*F(n-1) = (F(n) + F(n-1)) * F(n-1)    [Fibonacci recurrence]
+//                 = F(n)*F(n-1) + F(n-1)^2        [distributivity]
+//
+// This relates the cross-product at step n to the square and cross-product
+// at step n-1. It's a theorem ABOUT Fibonacci, not just a computation OF it.
+
+// -- n = 2 (even): F(1)*F(3) = F(2)^2 + 1 => 1*2 = 1 + 1 => 2 = 2 --
+// F(1)=1, F(2)=1, F(3)=2
+
+// F(2)^2 = 1*1 = 1 (MulRightOne)
+assertEqual(N1.TimesOneProof.Total.self, N1.self)                 // 1*1 = 1
+
+// F(1)*F(3) = 1*2 = 2 (MulLeftOne)
+assertEqual(N2.OneTimesProof.Total.self, N2.self)                 // 1*2 = 2
+
+// 1 + 1 = 2
+typealias Cassini2 = PlusSucc<PlusZero<N1>>
+assertEqual(Cassini2.Total.self, N2.OneTimesProof.Total.self)     // F(2)^2 + 1 = F(1)*F(3)
+
+// -- n = 3 (odd): F(2)*F(4) + 1 = F(3)^2 => 1*3 + 1 = 4 = 2*2 --
+// F(2)=1, F(3)=2, F(4)=3
+// This is also the n=1 difference-of-squares identity!
+
+// F(3)^2 = 2*2 = 4 (FlatMul2x2 from section 17)
+assertEqual(FlatMul2x2.Total.self, N4.self)                       // 2*2 = 4
+
+// F(2)*F(4) = 1*3 = 3 (Distr1x2p1 from section 20)
+assertEqual(Distr1x2p1.Total.self, N3.self)                       // 1*3 = 3
+
+// Distributive decomposition: F(4)*F(2) = (F(3)+F(2))*F(2) = F(3)*F(2) + F(2)^2
+// = (3)*1 = (2+1)*1 = 2*1 + 1*1 = 2 + 1 = 3
+// Using Distr1x2p1.DistrSum: Left=2 (F(3)*F(2)), Right=1 (F(2)^2), Total=3
+assertEqual(Distr1x2p1.DistrSum.Left.self, N2.self)               // F(3)*F(2) = 2
+assertEqual(Distr1x2p1.DistrSum.Right.self, N1.self)              // F(2)^2 = 1
+
+// 3 + 1 = 4
+typealias Cassini3 = PlusSucc<PlusZero<N3>>
+assertEqual(Cassini3.Total.self, FlatMul2x2.Total.self)           // F(2)*F(4) + 1 = F(3)^2
+
+// -- n = 4 (even): F(3)*F(5) = F(4)^2 + 1 => 2*5 = 9 + 1 = 10 --
+// F(3)=2, F(4)=3, F(5)=5
+
+// F(4)^2 = 3*3: use SuccLeftMul on FlatMul2x3
+assertEqual(FlatMul2x3.Distributed.Total.self, N9.self)           // 3*3 = 9
+
+// F(3)*F(5) = 2*5 = 10: 5 groups of 2 ticks
+typealias FlatMul2x4 = TimesGroup<TimesTick<TimesTick<FlatMul2x3>>>
+typealias FlatMul2x5 = TimesGroup<TimesTick<TimesTick<FlatMul2x4>>>
+assertEqual(FlatMul2x5.Total.self, N10.self)                      // 2*5 = 10
+
+// Distributive decomposition: F(5)*F(3) = (F(4)+F(3))*F(3) = F(4)*F(3) + F(3)^2
+// 5*2 = (3+2)*2. Rewrite as: 2*(3+2) = 2*3 + 2*2 = 6 + 4 = 10
+// (Using commutativity of the natural number product, not the proof)
+assertEqual(Distr2x2p3.DistrSum.Left.self, N4.self)               // 2*2 = F(3)^2 = 4
+assertEqual(Distr2x2p3.DistrSum.Right.self, N6.self)              // 2*3 = F(4)*F(3) = 6
+assertEqual(Distr2x2p3.DistrSum.Total.self, N10.self)             // 4 + 6 = 10
+
+// 9 + 1 = 10
+typealias Cassini4 = PlusSucc<PlusZero<N9>>
+assertEqual(Cassini4.Total.self, FlatMul2x5.Total.self)           // F(4)^2 + 1 = F(3)*F(5)
+
 // MARK: - Epilogue
 //
 // If you're reading this, the program compiled and exited cleanly. That
