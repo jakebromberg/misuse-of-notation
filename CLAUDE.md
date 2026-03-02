@@ -49,10 +49,9 @@ tutorial/                                    -- companion webpage for main.swift
     style.css                                -- typography, layout, responsive, components
     main.js                                  -- sidebar toggle, scroll-spy
     macro-highlight.js                       -- hover-highlight for macro panels
-  diagrams/                                  -- Graphviz DOT source files (9 diagrams)
+  diagrams/                                  -- Mermaid .mmd source files (9 diagrams)
   scripts/
-    generate-diagrams.sh                     -- runs dot -Tsvg on all .dot files
-    highlight.js                             -- Shiki build script for syntax highlighting
+    generate-diagrams.js                     -- renders .mmd files to SVG via @mermaid-js/mermaid-cli
   public/diagrams/                           -- generated SVGs (gitignored)
 ```
 
