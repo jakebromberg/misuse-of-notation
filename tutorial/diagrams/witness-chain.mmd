@@ -1,0 +1,12 @@
+flowchart LR
+    S0["PlusZero‹N2›\nL=2 R=0 T=2"]
+    S1["PlusSucc\nL=2 R=1 T=3"]
+    S2["PlusSucc\nL=2 R=2 T=4"]
+    S3["PlusSucc\nL=2 R=3 T=5"]
+
+    S0 -- "wrap" --> S1
+    S1 -- "wrap" --> S2
+    S2 -- "wrap" --> S3
+
+    style S0 fill:#e8d5f5,stroke:#9333ea
+    style S3 fill:#dcfce7,stroke:#16a34a

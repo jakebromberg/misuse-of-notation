@@ -1,0 +1,24 @@
+flowchart TB
+    subgraph Composed ["Composed (TimesSucc)"]
+        TS["TimesSucc‹Proof, Sum›"]
+        TSNote["where Proof: NaturalProduct,\nSum: NaturalSum,\nSum.Left == Proof.Left.Total, ..."]
+        TSWarn["rewrite system explosion"]
+    end
+
+    subgraph Flat ["Flat (TimesTick / TimesGroup)"]
+        TZ["TimesZero‹N›\nBase case"]
+        TT["TimesTick‹P›\nTotal = S(P.Total)\nNo where clauses"]
+        TG["TimesGroup‹P›\nRight = S(P.Right)\nNo where clauses"]
+    end
+
+    TZ -- "tick" --> TT
+    TT -- "tick" --> TT
+    TT -- "group boundary" --> TG
+    TG -- "tick" --> TT
+
+    style TS fill:#fee2e2,stroke:#dc2626
+    style TSNote fill:#fee2e2,stroke:#fca5a5
+    style TSWarn fill:#fee2e2,stroke:#dc2626,color:#dc2626
+    style TZ fill:#dcfce7,stroke:#16a34a
+    style TT fill:#dcfce7,stroke:#16a34a
+    style TG fill:#dcfce7,stroke:#16a34a
