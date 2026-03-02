@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph Phi ["Golden Ratio: 1; 1, 1, 1, ..."]
+        PhiCF["PhiCF\nHead = N1"]
+        PhiCF -- "Tail = Self" --> PhiCF
+    end
+
+    subgraph Sqrt2 ["sqrt 2 = 1; 2, 2, 2, ..."]
+        Sqrt2CF["Sqrt2CF\nHead = N1"]
+        Periodic["Sqrt2Periodic\nHead = N2"]
+        Sqrt2CF -- "Tail" --> Periodic
+        Periodic -- "Tail = Self" --> Periodic
+    end
+
+    style PhiCF fill:#e8d5f5,stroke:#9333ea
+    style Sqrt2CF fill:#dcfce7,stroke:#16a34a
+    style Periodic fill:#bbf7d0,stroke:#16a34a

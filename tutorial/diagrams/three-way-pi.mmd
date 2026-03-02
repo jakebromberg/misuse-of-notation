@@ -1,0 +1,12 @@
+flowchart TB
+    B["Brouncker CF\n4/pi = 1 + 1²/(2 + 3²/(2 + ...))\nConvergents: h_k / k_k"]
+    L["Leibniz Series\npi/4 = 1 - 1/3 + 1/5 - ...\nPartial sums: S_k"]
+    W["Wallis Product\npi/2 = prod (2k)² / ((2k-1)(2k+1))\nPartial products: W_k"]
+
+    B <-- "CF_k.P = LS_{k+1}.Q\n(Brouncker-Leibniz)" --> L
+    L <-- "WQ[k] = LQ[k+1] * LQ[k]\n(Wallis-Leibniz)" --> W
+    B <-. "WQ[k] = CF_k.P * CF_{k-1}.P\n(derived)" .-> W
+
+    style B fill:#e8d5f5,stroke:#9333ea
+    style L fill:#dbeafe,stroke:#3b82f6
+    style W fill:#dcfce7,stroke:#16a34a
