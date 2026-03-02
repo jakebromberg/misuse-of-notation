@@ -2,7 +2,7 @@
 digraph coinductive_stream {
   bgcolor="transparent";
   node [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=11
     shape=box
     style="rounded,filled"
@@ -11,7 +11,7 @@ digraph coinductive_stream {
     penwidth=1.5
   ];
   edge [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=10
     penwidth=1.5
     arrowsize=0.8
@@ -20,7 +20,7 @@ digraph coinductive_stream {
   subgraph cluster_phi {
     label="Golden Ratio [1; 1, 1, 1, ...]";
     labeljust=l;
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#c084fc";
@@ -33,7 +33,7 @@ digraph coinductive_stream {
   subgraph cluster_sqrt2 {
     label="sqrt(2) = [1; 2, 2, 2, ...]";
     labeljust=l;
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#86efac";

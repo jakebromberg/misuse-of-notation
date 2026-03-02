@@ -44,7 +44,7 @@
     <li><a href="#section-12">12. Distributivity</a></li>
     <li><a href="#section-13">13. Number-theoretic identities</a></li>
     <li><a href="#section-14">14. Convergent determinant</a></li>
-    <li><a href="#section-15">15. Wallis-Leibniz correspondence</a></li>
+    <li><a href="#section-15">15. Three pi correspondences</a></li>
     <li style="margin-top: 1rem;"><a href="#epilogue">Epilogue</a></li>
   </ul>
 </nav>
@@ -66,8 +66,9 @@
     <p>The <a href="https://en.wikipedia.org/wiki/Natural_number" target="_blank" rel="noopener">natural numbers</a> are built from two primitives following the <a href="https://en.wikipedia.org/wiki/Peano_axioms" target="_blank" rel="noopener">Peano axioms</a>:</p>
     <ul>
       <li><code>Zero</code> &mdash; the number 0</li>
-      <li><code>AddOne&lt;N&gt;</code> &mdash; the successor of N (i.e. N + 1)</li>
+      <li><code>AddOne&lt;N&gt;</code> &mdash; the <strong>successor</strong> of N, written S(N) in mathematical notation (i.e. N + 1)</li>
     </ul>
+    <p>Throughout this tutorial, S(N) denotes the successor function: S(0) = 1, S(1) = 2, S(2) = 3, and so on. In Swift, S(N) is the type <code>AddOne&lt;N&gt;</code>.</p>
     <p>Every natural number is a unique nesting of <code>AddOne</code> around <code>Zero</code>:</p>
   </div>
   <pre><code class="language-swift">// 0 = Zero
@@ -164,24 +165,24 @@ assertEqual(PiProof._LS3.P.self, N13.self)   // S_3 = 13/15</code></pre>
   <div class="macro-panel">
     <div class="macro-input">
       <div class="macro-label">Input</div>
-      <pre><code><span data-group="pi-decl">@PiConvergenceProof(depth: 1)</span>
+<pre><code><span data-group="pi-decl">@PiConvergenceProof(depth: 1)</span>
 <span data-group="pi-enum">enum PiProof {}</span></code></pre>
     </div>
     <div class="macro-arrow"><span>macro<br>expansion</span></div>
     <div class="macro-output">
       <div class="macro-label">Expanded</div>
-      <pre><code><span data-group="pi-enum">enum PiProof {</span>
-    <span data-group="pi-cf">typealias _CF0 = GCFConv0&lt;N1&gt;</span>
-    typealias _CFS_H1 = PlusSucc&lt;PlusZero&lt;N2&gt;&gt;
-    typealias _CFS_K1 = PlusZero&lt;N2&gt;
-    <span data-group="pi-cf">typealias _CF1 = GCFConvStep&lt;_CF0, ...&gt;</span>
-    <span data-group="pi-ls">typealias _LS1 = LeibnizBase</span>
-    typealias _LSW2 = PlusSucc&lt;PlusZero&lt;N2&gt;&gt;
-    <span data-group="pi-ls">typealias _LS2 = LeibnizSub&lt;_LS1, ...&gt;</span>
-    <span data-group="pi-check">func _piCorrespondenceCheck() {
-        assertEqual(_CF1.P.self, _LS2.Q.self)
-        assertEqual(_CF1.Q.self, _LS2.P.self)
-    }</span>
+<pre><code><span data-group="pi-enum">enum PiProof {</span>
+  <span data-group="pi-cf">typealias _CF0 = GCFConv0&lt;N1&gt;</span>
+  typealias _CFS_H1 = PlusSucc&lt;PlusZero&lt;N2&gt;&gt;
+  typealias _CFS_K1 = PlusZero&lt;N2&gt;
+  <span data-group="pi-cf">typealias _CF1 = GCFConvStep&lt;_CF0, ...&gt;</span>
+  <span data-group="pi-ls">typealias _LS1 = LeibnizBase</span>
+  typealias _LSW2 = PlusSucc&lt;PlusZero&lt;N2&gt;&gt;
+  <span data-group="pi-ls">typealias _LS2 = LeibnizSub&lt;_LS1, ...&gt;</span>
+  <span data-group="pi-check">func _piCorrespondenceCheck() {
+      assertEqual(_CF1.P.self, _LS2.Q.self)
+      assertEqual(_CF1.Q.self, _LS2.P.self)
+  }</span>
 <span data-group="pi-enum">}</span></code></pre>
     </div>
   </div>
@@ -206,24 +207,24 @@ assertEqual(WallisProof._W1.Q.self, N3.self)</code></pre>
   <div class="macro-panel">
     <div class="macro-input">
       <div class="macro-label">Input</div>
-      <pre><code><span data-group="w-decl">@WallisProductProof(depth: 1)</span>
+<pre><code><span data-group="w-decl">@WallisProductProof(depth: 1)</span>
 <span data-group="w-enum">enum WallisProof {}</span></code></pre>
     </div>
     <div class="macro-arrow"><span>macro<br>expansion</span></div>
     <div class="macro-output">
       <div class="macro-label">Expanded</div>
-      <pre><code><span data-group="w-enum">enum WallisProof {</span>
-    <span data-group="w-base">typealias _W0 = WallisBase</span>
-    <span data-group="w-step">typealias _W1 = WallisStep&lt;_W0,
-        N2.OneTimesProof,
-        N2.OneTimesProof.Distributed,
-        N1.OneTimesProof,
-        N3.OneTimesProof&gt;</span>
-    <span data-group="w-factor">typealias _WFC1 =
-        PlusSucc&lt;PlusZero&lt;N3&gt;&gt;</span>
-    <span data-group="w-check">func _wallisFactorCheck() {
-        assertEqual(_WFC1.Total.self, N4.self)
-    }</span>
+<pre><code><span data-group="w-enum">enum WallisProof {</span>
+  <span data-group="w-base">typealias _W0 = WallisBase</span>
+  <span data-group="w-step">typealias _W1 = WallisStep&lt;_W0,
+      N2.OneTimesProof,
+      N2.OneTimesProof.Distributed,
+      N1.OneTimesProof,
+      N3.OneTimesProof&gt;</span>
+  <span data-group="w-factor">typealias _WFC1 =
+      PlusSucc&lt;PlusZero&lt;N3&gt;&gt;</span>
+  <span data-group="w-check">func _wallisFactorCheck() {
+      assertEqual(_WFC1.Total.self, N4.self)
+  }</span>
 <span data-group="w-enum">}</span></code></pre>
     </div>
   </div>
@@ -250,25 +251,19 @@ assertEqual(FibProof._Fib6.Current.self, N8.self)  // F(6) = 8</code></pre>
   <div class="macro-panel">
     <div class="macro-input">
       <div class="macro-label">Input</div>
-      <pre><code><span data-group="fib-decl">@FibonacciProof(upTo: 3)</span>
+<pre><code><span data-group="fib-decl">@FibonacciProof(upTo: 3)</span>
 <span data-group="fib-enum">enum FibProof {}</span></code></pre>
     </div>
     <div class="macro-arrow"><span>macro<br>expansion</span></div>
     <div class="macro-output">
       <div class="macro-label">Expanded</div>
-      <pre><code><span data-group="fib-enum">enum FibProof {</span>
-    <span data-group="fib-w1">typealias _FibW1 =
-        PlusSucc&lt;PlusZero&lt;Zero&gt;&gt;</span>
-    <span data-group="fib-s1">typealias _Fib1 =
-        FibStep&lt;Fib0, _FibW1&gt;</span>
-    <span data-group="fib-w2">typealias _FibW2 =
-        PlusSucc&lt;PlusZero&lt;N1&gt;&gt;</span>
-    <span data-group="fib-s2">typealias _Fib2 =
-        FibStep&lt;_Fib1, _FibW2&gt;</span>
-    <span data-group="fib-w3">typealias _FibW3 = PlusSucc&lt;
-        PlusSucc&lt;PlusZero&lt;N1&gt;&gt;&gt;</span>
-    <span data-group="fib-s3">typealias _Fib3 =
-        FibStep&lt;_Fib2, _FibW3&gt;</span>
+<pre><code><span data-group="fib-enum">enum FibProof {</span>
+  <span data-group="fib-w1">typealias _FibW1 = PlusSucc&lt;PlusZero&lt;Zero&gt;&gt;</span>
+  <span data-group="fib-s1">typealias _Fib1 = FibStep&lt;Fib0, _FibW1&gt;</span>
+  <span data-group="fib-w2">typealias _FibW2 = PlusSucc&lt;PlusZero&lt;N1&gt;&gt;</span>
+  <span data-group="fib-s2">typealias _Fib2 = FibStep&lt;_Fib1, _FibW2&gt;</span>
+  <span data-group="fib-w3">typealias _FibW3 = PlusSucc&lt;PlusSucc&lt;PlusZero&lt;N1&gt;&gt;&gt;</span>
+  <span data-group="fib-s3">typealias _Fib3 = FibStep&lt;_Fib2, _FibW3&gt;</span>
 <span data-group="fib-enum">}</span></code></pre>
     </div>
   </div>
@@ -294,24 +289,24 @@ assertEqual(GoldenRatioProof._CF5.P.self, N13.self)  // h_5 = F(7) = 13</code></
   <div class="macro-panel">
     <div class="macro-input">
       <div class="macro-label">Input</div>
-      <pre><code><span data-group="gr-decl">@GoldenRatioProof(depth: 1)</span>
+<pre><code><span data-group="gr-decl">@GoldenRatioProof(depth: 1)</span>
 <span data-group="gr-enum">enum GoldenRatioProof {}</span></code></pre>
     </div>
     <div class="macro-arrow"><span>macro<br>expansion</span></div>
     <div class="macro-output">
       <div class="macro-label">Expanded</div>
-      <pre><code><span data-group="gr-enum">enum GoldenRatioProof {</span>
-    <span data-group="gr-fib">// Fibonacci chain
-    typealias _Fib1 = FibStep&lt;Fib0, ...&gt;
-    typealias _Fib2 = FibStep&lt;_Fib1, ...&gt;
-    typealias _Fib3 = FibStep&lt;_Fib2, ...&gt;</span>
-    <span data-group="gr-cf">// CF convergents
-    typealias _CF0 = GCFConv0&lt;N1&gt;
-    typealias _CF1 = GCFConvStep&lt;_CF0, ...&gt;</span>
-    <span data-group="gr-check">func _goldenRatioCorrespondenceCheck() {
-        assertEqual(_CF0.P.self, _Fib2.Current.self)
-        assertEqual(_CF1.P.self, _Fib3.Current.self)
-    }</span>
+<pre><code><span data-group="gr-enum">enum GoldenRatioProof {</span>
+  <span data-group="gr-fib">// Fibonacci chain
+  typealias _Fib1 = FibStep&lt;Fib0, ...&gt;
+  typealias _Fib2 = FibStep&lt;_Fib1, ...&gt;
+  typealias _Fib3 = FibStep&lt;_Fib2, ...&gt;</span>
+  <span data-group="gr-cf">// CF convergents
+  typealias _CF0 = GCFConv0&lt;N1&gt;
+  typealias _CF1 = GCFConvStep&lt;_CF0, ...&gt;</span>
+  <span data-group="gr-check">func _goldenRatioCorrespondenceCheck() {
+      assertEqual(_CF0.P.self, _Fib2.Current.self)
+      assertEqual(_CF1.P.self, _Fib3.Current.self)
+  }</span>
 <span data-group="gr-enum">}</span></code></pre>
     </div>
   </div>
@@ -391,7 +386,9 @@ extension PlusSucc: AddCommutative
 <section class="tutorial-section" id="section-9">
   <h2>9. <a href="https://en.wikipedia.org/wiki/Associative_property" target="_blank" rel="noopener">Associativity</a> of addition</h2>
   <div class="prose">
-    <p><span class="math">(a + b) + c = a + (b + c)</span> requires reasoning about two proofs. The <strong>ProofSeed</strong> technique: wrap one proof as a seed, induct over the second parameter.</p>
+    <p><span class="math">(a + b) + c = a + (b + c)</span> requires reasoning about <em>two</em> addition proofs simultaneously: one for a + b and another for the result plus c. But Swift's conditional conformance can only do induction on <em>one</em> type parameter at a time.</p>
+    <p>The <strong>seed</strong> technique solves this. A "seed" is a wrapper type that conforms to <code>Natural</code> while carrying an existing proof inside it. <code>ProofSeed&lt;P&gt;</code> wraps a <code>NaturalSum</code> proof P and acts as the starting point (analogous to zero) for a second layer of induction. You then stack <code>AddOne</code> layers on top of the seed &mdash; each layer extends the wrapped proof by one <code>PlusSucc</code>. The seed freezes the first parameter so the second parameter can vary freely.</p>
+    <p>This pattern recurs: <code>ProductSeed</code> (<a href="#section-12">section 12</a>) wraps a <code>NaturalProduct</code> proof for distributivity. Any time you need induction over two parameters, you can wrap one as a seed and induct over the other.</p>
   </div>
   <div class="diagram-container">
     <img src="/diagrams/seed-wrapping.svg" alt="ProofSeed induction pattern" loading="lazy">
@@ -464,24 +461,22 @@ assertEqual(MulComm4._Fwd3.Total.self, N12.self) // 4*3=12</code></pre>
   <div class="macro-panel">
     <div class="macro-input">
       <div class="macro-label">Input</div>
-      <pre><code><span data-group="mc-decl">@MulCommProof(leftOperand: 2,
+<pre><code><span data-group="mc-decl">@MulCommProof(leftOperand: 2,
               depth: 2)</span>
 <span data-group="mc-enum">enum MulComm2 {}</span></code></pre>
     </div>
     <div class="macro-arrow"><span>macro<br>expansion</span></div>
     <div class="macro-output">
       <div class="macro-label">Expanded</div>
-      <pre><code><span data-group="mc-enum">enum MulComm2 {</span>
-    <span data-group="mc-fwd">// Forward: 2 * b (flat)
-    typealias _Fwd0 = TimesZero&lt;N2&gt;
-    typealias _Fwd1 = TimesGroup&lt;
-        TimesTick&lt;TimesTick&lt;_Fwd0&gt;&gt;&gt;
-    typealias _Fwd2 = TimesGroup&lt;
-        TimesTick&lt;TimesTick&lt;_Fwd1&gt;&gt;&gt;</span>
-    <span data-group="mc-rev">// Reverse: b * 2 (SuccLeftMul)
-    typealias _Rev0 = N2.ZeroTimesProof
-    typealias _Rev1 = _Rev0.Distributed
-    typealias _Rev2 = _Rev1.Distributed</span>
+<pre><code><span data-group="mc-enum">enum MulComm2 {</span>
+  <span data-group="mc-fwd">// Forward: 2 * b (flat encoding)
+  typealias _Fwd0 = TimesZero&lt;N2&gt;
+  typealias _Fwd1 = TimesGroup&lt;TimesTick&lt;TimesTick&lt;_Fwd0&gt;&gt;&gt;
+  typealias _Fwd2 = TimesGroup&lt;TimesTick&lt;TimesTick&lt;_Fwd1&gt;&gt;&gt;</span>
+  <span data-group="mc-rev">// Reverse: b * 2 (via SuccLeftMul)
+  typealias _Rev0 = N2.ZeroTimesProof
+  typealias _Rev1 = _Rev0.Distributed
+  typealias _Rev2 = _Rev1.Distributed</span>
 <span data-group="mc-enum">}</span></code></pre>
     </div>
   </div>
@@ -512,7 +507,9 @@ public protocol SuccLeftMul: NaturalProduct {
 <section class="tutorial-section" id="section-11">
   <h2>11. <a href="https://en.wikipedia.org/wiki/Coinduction" target="_blank" rel="noopener">Coinductive</a> streams</h2>
   <div class="prose">
-    <p>Coinductive streams represent CF coefficient sequences as types. Self-referential definitions are productive fixed points &mdash; <a href="https://en.wikipedia.org/wiki/Corecursion" target="_blank" rel="noopener">corecursion</a> in the type system.</p>
+    <p>The bounded proofs in sections 3&ndash;7 represent irrational numbers through finite convergent chains (macro-generated). Coinductive streams provide a complementary representation: the continued fraction coefficient sequence <em>itself</em> as a type. Where the convergent proofs compute specific rational approximations, the stream <em>is</em> the irrational number &mdash; an infinite object encoded in a finite type definition.</p>
+    <p>A <code>CFStream</code> has a <code>Head</code> (the current coefficient) and a <code>Tail</code> (the rest of the stream). For periodic CFs, self-referential types create productive fixed points &mdash; <a href="https://en.wikipedia.org/wiki/Corecursion" target="_blank" rel="noopener">corecursion</a> in the type system. Swift resolves the self-reference lazily, so <code>.Tail.Tail...Head</code> always terminates.</p>
+    <p>The stream coefficients match the values used by the macro-generated convergent proofs. For the golden ratio, <code>PhiCF.Head = N1</code> matches the all-ones CF used in <a href="#section-6">section 6</a>. For &radic;2, <code>Sqrt2CF</code> encodes [1; 2, 2, ...], the same CF computed by <a href="#section-7">section 7</a>. The streams encode the <em>identity</em> of the number; the convergent proofs compute its <em>approximations</em>.</p>
   </div>
   <div class="diagram-container">
     <img src="/diagrams/coinductive-stream.svg" alt="Coinductive streams" loading="lazy">
@@ -628,9 +625,12 @@ assertEqual(Sqrt2DetWit2.Total.self, Sqrt2Det_3x5.Total.self)</code></pre>
 <!-- 15. Wallis-Leibniz correspondence                                -->
 <!-- ================================================================ -->
 <section class="tutorial-section" id="section-15">
-  <h2>15. Wallis&ndash;Leibniz correspondence</h2>
+  <h2>15. Three pi correspondences</h2>
   <div class="prose">
-    <p>Each Wallis denominator = product of two consecutive Leibniz denominators: <span class="math">WQ[k] = LQ[k+1] * LQ[k]</span>. Combined with Brouncker&ndash;Leibniz: <span class="math">WQ[k] = CF<sub>k</sub>.P * CF<sub>k-1</sub>.P</span> &mdash; a three-way connection.</p>
+    <p>The codebase proves three representations of pi independently: Brouncker's CF (<a href="#section-3">section 3</a>), the Leibniz series (<a href="#section-3">section 3</a>), and the Wallis product (<a href="#section-4">section 4</a>). This section connects all three.</p>
+    <p><strong>Brouncker&ndash;Leibniz</strong> (proved by the <code>@PiConvergenceProof</code> macro): at each depth k, the CF convergent numerator equals the Leibniz denominator and vice versa: <span class="math">CF<sub>k</sub>.P = LS<sub>k+1</sub>.Q</span>. This was verified in <a href="#section-3">section 3</a>.</p>
+    <p><strong>Wallis&ndash;Leibniz</strong> (proved here): each Wallis denominator is the product of two consecutive Leibniz denominators: <span class="math">WQ[k] = LQ[k+1] * LQ[k]</span>. Leibniz denominators accumulate one odd factor per step (1, 3, 15, 105, ...), while Wallis denominators accumulate paired odd factors &mdash; the product telescopes.</p>
+    <p><strong>Brouncker&ndash;Wallis</strong> (derived): combining the two, <span class="math">WQ[k] = CF<sub>k</sub>.P * CF<sub>k-1</sub>.P</span>. Each Wallis denominator is the product of two consecutive CF numerators. This closes the triangle.</p>
   </div>
   <pre><code class="language-swift">// k=1: WQ[1] = 3*1 = 3
 typealias WallisLeibniz_3x1 = N3.TimesOneProof
@@ -644,13 +644,20 @@ typealias WL_15x3 = WL_1x3.Distributed.Distributed.Distributed
     .Distributed
 assertEqual(WL_15x3.Total.self, WallisProof._W2.Q.self)  // 45</code></pre>
 
+  <h3>Three-way connection</h3>
   <div class="diagram-container">
     <img src="/diagrams/three-way-pi.svg" alt="Three-way pi connection" loading="lazy">
     <p class="diagram-caption">Three representations of pi, connected by type-level proofs.</p>
   </div>
-  <pre><code class="language-swift">// Three-way: CF_k.P = LS_{k+1}.Q
-assertEqual(PiProof._CF1.P.self, PiProof._LS2.Q.self)
-assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)</code></pre>
+  <pre><code class="language-swift">// Brouncker-Leibniz: CF_k.P = LS_{k+1}.Q
+assertEqual(PiProof._CF1.P.self, PiProof._LS2.Q.self)    // 3 = 3
+assertEqual(PiProof._CF0.P.self, PiProof._LS1.Q.self)    // 1 = 1
+assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)    // 15 = 15
+
+// Brouncker-Wallis (derived): WQ[k] = CF_k.P * CF_{k-1}.P
+// At k=1: WQ[1] = CF_1.P * CF_0.P = 3 * 1 = 3
+assertEqual(WallisLeibniz_3x1.Left.self, PiProof._CF1.P.self)
+assertEqual(WallisLeibniz_3x1.Right.self, PiProof._CF0.P.self)</code></pre>
 </section>
 
 <!-- ================================================================ -->
@@ -659,8 +666,9 @@ assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)</code></pre>
 <section class="epilogue" id="epilogue">
   <h2>Epilogue</h2>
   <div class="prose">
-    <p>If you're reading this, the program compiled. The compiler verified 100+ mathematical facts &mdash; natural number arithmetic, continued fractions, the Leibniz series, the Wallis product, the golden ratio / Fibonacci correspondence, the &radic;2 CF / matrix construction, universal addition and multiplication theorems, number-theoretic identities, the Wallis&ndash;Leibniz correspondence, and coinductive streams &mdash; all without executing a single computation at runtime.</p>
-    <p>The proof is the compilation itself.</p>
+    <p>Everything you've read above is verified by the Swift compiler. The <a href="https://github.com/jakebromberg/abuse-of-notation/blob/master/Sources/AbuseOfNotationClient/main.swift" target="_blank" rel="noopener">source file</a> compiles and exits cleanly &mdash; every <code>assertEqual</code> call unifies its type arguments, and every witness type satisfies its protocol constraints. There is no runtime computation. The proof is the compilation itself.</p>
+    <p>The compiler verified 100+ mathematical facts: natural number arithmetic, continued fractions, the Leibniz series, the Wallis product, the golden ratio / Fibonacci correspondence, the &radic;2 CF / matrix construction, four universal addition theorems (left zero identity, successor-left shift, commutativity, associativity), six universal multiplication theorems (left zero annihilation, successor-left multiplication, per-A commutativity, multiplicative identities, distributivity), number-theoretic identities (difference of squares, Cassini, convergent determinant), three pi correspondences (Brouncker&ndash;Leibniz, Wallis&ndash;Leibniz, Brouncker&ndash;Wallis), and coinductive streams for irrational numbers.</p>
+    <p>To verify it yourself: <code>swift build &amp;&amp; swift run AbuseOfNotationClient</code>.</p>
   </div>
 </section>
 

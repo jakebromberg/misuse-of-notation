@@ -3,7 +3,7 @@ digraph flat_vs_composed {
   bgcolor="transparent";
   rankdir=TB;
   node [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=11
     shape=box
     style="rounded,filled"
@@ -12,7 +12,7 @@ digraph flat_vs_composed {
     penwidth=1.5
   ];
   edge [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=10
     penwidth=1.5
     arrowsize=0.8
@@ -21,7 +21,7 @@ digraph flat_vs_composed {
   subgraph cluster_composed {
     label="Composed (TimesSucc)";
     labeljust=l;
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#fca5a5";
@@ -41,7 +41,7 @@ digraph flat_vs_composed {
   subgraph cluster_flat {
     label="Flat (TimesTick / TimesGroup)";
     labeljust=l;
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#86efac";

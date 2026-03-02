@@ -3,7 +3,7 @@ digraph seed_wrapping {
   bgcolor="transparent";
   rankdir=LR;
   node [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=11
     shape=box
     style="rounded,filled"
@@ -12,7 +12,7 @@ digraph seed_wrapping {
     penwidth=1.5
   ];
   edge [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=10
     penwidth=1.5
     arrowsize=0.8

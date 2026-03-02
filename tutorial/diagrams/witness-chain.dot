@@ -3,7 +3,7 @@ digraph witness_chain {
   rankdir=LR;
   bgcolor="transparent";
   node [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=11
     shape=record
     style="rounded,filled"
@@ -12,7 +12,7 @@ digraph witness_chain {
     penwidth=1.5
   ];
   edge [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=10
     color="#9333ea"
     penwidth=1.5

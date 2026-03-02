@@ -3,14 +3,14 @@ digraph macro_architecture {
   bgcolor="transparent";
   rankdir=TB;
   node [
-    fontname="Inter"
+    fontname="Helvetica Neue"
     fontsize=12
     shape=box
     style="rounded,filled"
     penwidth=1.5
   ];
   edge [
-    fontname="Inter"
+    fontname="Helvetica Neue"
     fontsize=10
     penwidth=1.5
     arrowsize=0.8
@@ -18,7 +18,7 @@ digraph macro_architecture {
 
   subgraph cluster_protocols {
     label="Protocol Definitions";
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#d6d3d1";
@@ -32,7 +32,7 @@ digraph macro_architecture {
 
   subgraph cluster_macro {
     label="Macro Expansion (Proof Search)";
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#d6d3d1";
@@ -46,7 +46,7 @@ digraph macro_architecture {
 
   subgraph cluster_checker {
     label="Type Checker (Proof Verifier)";
-    fontname="Inter";
+    fontname="Helvetica Neue";
     fontsize=11;
     style="rounded,dashed";
     color="#d6d3d1";

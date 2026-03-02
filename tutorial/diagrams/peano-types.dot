@@ -3,7 +3,7 @@ digraph peano_types {
   rankdir=LR;
   bgcolor="transparent";
   node [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=12
     shape=box
     style="rounded,filled"
@@ -12,7 +12,7 @@ digraph peano_types {
     penwidth=1.5
   ];
   edge [
-    fontname="Source Code Pro"
+    fontname="Menlo"
     fontsize=10
     color="#9333ea"
     penwidth=1.5

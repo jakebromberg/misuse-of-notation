@@ -2,7 +2,7 @@
 digraph three_way_pi {
   bgcolor="transparent";
   node [
-    fontname="Inter"
+    fontname="Helvetica Neue"
     fontsize=12
     shape=box
     style="rounded,filled"
@@ -11,7 +11,7 @@ digraph three_way_pi {
     penwidth=1.5
   ];
   edge [
-    fontname="Inter"
+    fontname="Helvetica Neue"
     fontsize=10
     penwidth=2
     arrowsize=0.8

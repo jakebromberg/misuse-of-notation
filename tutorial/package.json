@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cp index.html .index-source.html && node scripts/highlight.js && vite; cp .index-source.html index.html",
     "build": "cp index.html .index-source.html && node scripts/highlight.js && vite build; cp .index-source.html index.html",
     "preview": "vite preview",
     "highlight": "node scripts/highlight.js",
