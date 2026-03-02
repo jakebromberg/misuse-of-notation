@@ -2,15 +2,15 @@ flowchart BT
     Integer(["Integer"])
     Natural(["Natural"])
     Nonpositive(["Nonpositive"])
-    Zero["Zero"]
     AddOne["AddOne‹N›"]
+    Zero["Zero"]
     SubOne["SubOne‹N›"]
 
     Natural -- "conforms" --> Integer
     Nonpositive -- "conforms" --> Integer
+    AddOne -. "where N: Natural" .-> Natural
     Zero -- "conforms" --> Natural
     Zero -- "conforms" --> Nonpositive
-    AddOne -. "where N: Natural" .-> Natural
     SubOne -. "where N: Nonpositive" .-> Nonpositive
 
     style Integer fill:#e2e3e5,stroke:#28253D
