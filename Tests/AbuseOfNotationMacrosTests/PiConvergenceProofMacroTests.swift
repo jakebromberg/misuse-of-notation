@@ -24,23 +24,23 @@ final class PiConvergenceProofMacroTests: XCTestCase {
             expandedSource: """
             enum PiProof {
 
-                typealias _CF0 = GCFConv0<AddOne<Zero>>
+                typealias Convergent0 = GCFConvergent0<AddOne<Zero>>
 
-                typealias _CFS_H1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
+                typealias ConvergentSumH1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
 
-                typealias _CFS_K1 = PlusZero<AddOne<AddOne<Zero>>>
+                typealias ConvergentSumK1 = PlusZero<AddOne<AddOne<Zero>>>
 
-                typealias _CF1 = GCFConvStep<_CF0, AddOne<Zero>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, _CFS_H1, AddOne<Zero>.OneTimesProof.Distributed, Zero.OneTimesProof, _CFS_K1>
+                typealias Convergent1 = GCFConvergentStep<Convergent0, AddOne<Zero>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, ConvergentSumH1, AddOne<Zero>.OneTimesProof.Distributed, Zero.OneTimesProof, ConvergentSumK1>
 
-                typealias _LS1 = LeibnizBase
+                typealias LeibnizSum1 = LeibnizBase
 
-                typealias _LSW2 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
+                typealias LeibnizWitness2 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
 
-                typealias _LS2 = LeibnizSub<_LS1, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof, _LSW2>
+                typealias LeibnizSum2 = LeibnizSub<LeibnizSum1, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof, LeibnizWitness2>
 
-                func _piCorrespondenceCheck() {
-                    assertEqual(_CF1.P.self, _LS2.Q.self)
-                    assertEqual(_CF1.Q.self, _LS2.P.self)
+                func piCorrespondenceCheck() {
+                    assertEqual(Convergent1.P.self, LeibnizSum2.Q.self)
+                    assertEqual(Convergent1.Q.self, LeibnizSum2.P.self)
                 }
             }
             """,

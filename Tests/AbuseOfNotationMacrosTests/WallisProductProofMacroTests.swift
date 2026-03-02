@@ -24,14 +24,14 @@ final class WallisProductProofMacroTests: XCTestCase {
             expandedSource: """
             enum WallisProof {
 
-                typealias _W0 = WallisBase
+                typealias Wallis0 = WallisBase
 
-                typealias _W1 = WallisStep<_W0, AddOne<AddOne<Zero>>.OneTimesProof, AddOne<AddOne<Zero>>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof>
+                typealias Wallis1 = WallisStep<Wallis0, AddOne<AddOne<Zero>>.OneTimesProof, AddOne<AddOne<Zero>>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, AddOne<AddOne<AddOne<Zero>>>.OneTimesProof>
 
-                typealias _WFC1 = PlusSucc<PlusZero<AddOne<AddOne<AddOne<Zero>>>>>
+                typealias WallisFactor1 = PlusSucc<PlusZero<AddOne<AddOne<AddOne<Zero>>>>>
 
-                func _wallisFactorCheck() {
-                    assertEqual(_WFC1.Total.self, AddOne<AddOne<AddOne<AddOne<Zero>>>>.self)
+                func wallisFactorCheck() {
+                    assertEqual(WallisFactor1.Total.self, AddOne<AddOne<AddOne<AddOne<Zero>>>>.self)
                 }
             }
             """,

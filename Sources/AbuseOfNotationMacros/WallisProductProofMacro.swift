@@ -73,7 +73,7 @@ public struct WallisProductProofMacro: MemberMacro {
         var decls: [DeclSyntax] = gen.declarations()
 
         // --- Generate Wallis step chain ---
-        let w0: DeclSyntax = "typealias _W0 = WallisBase"
+        let w0: DeclSyntax = "typealias Wallis0 = WallisBase"
         decls.append(w0)
 
         for k in 1...depth {
@@ -91,7 +91,7 @@ public struct WallisProductProofMacro: MemberMacro {
             let qTimesTwoKm1 = ProductChainGenerator.name(factor: prevQ, multiplier: twoKm1)
             let midQTimesTwoKp1 = ProductChainGenerator.name(factor: midQ, multiplier: twoKp1)
 
-            let wDecl: DeclSyntax = "typealias _W\(raw: String(k)) = WallisStep<_W\(raw: String(k - 1)), \(raw: pTimesTwoK), \(raw: midPTimesTwoK), \(raw: qTimesTwoKm1), \(raw: midQTimesTwoKp1)>"
+            let wDecl: DeclSyntax = "typealias Wallis\(raw: String(k)) = WallisStep<Wallis\(raw: String(k - 1)), \(raw: pTimesTwoK), \(raw: midPTimesTwoK), \(raw: qTimesTwoKm1), \(raw: midQTimesTwoKp1)>"
             decls.append(wDecl)
         }
 
@@ -102,7 +102,7 @@ public struct WallisProductProofMacro: MemberMacro {
             let twoK = 2 * k
             let denFactor = (twoK - 1) * (twoK + 1)  // left
             let witness = plusSuccChain(left: denFactor, right: 1)
-            let fcDecl: DeclSyntax = "typealias _WFC\(raw: String(k)) = \(raw: witness)"
+            let fcDecl: DeclSyntax = "typealias WallisFactor\(raw: String(k)) = \(raw: witness)"
             decls.append(fcDecl)
         }
 
@@ -112,10 +112,10 @@ public struct WallisProductProofMacro: MemberMacro {
             let twoK = 2 * k
             let numFactor = twoK * twoK
             let peano = peanoTypeName(for: numFactor)
-            body += "    assertEqual(_WFC\(k).Total.self, \(peano).self)\n"
+            body += "    assertEqual(WallisFactor\(k).Total.self, \(peano).self)\n"
         }
         let checkDecl: DeclSyntax = """
-        func _wallisFactorCheck() {
+        func wallisFactorCheck() {
         \(raw: body)}
         """
         decls.append(checkDecl)

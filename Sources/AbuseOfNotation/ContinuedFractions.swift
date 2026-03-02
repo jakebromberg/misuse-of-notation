@@ -20,7 +20,7 @@ public protocol GCFConvergent {
 }
 
 /// Base convergent (depth 0): h_0 = b_0, k_0 = 1, with h_{-1} = 1, k_{-1} = 0.
-public struct GCFConv0<B0: Natural>: GCFConvergent {
+public struct GCFConvergent0<B0: Natural>: GCFConvergent {
     public typealias P = B0
     public typealias Q = AddOne<Zero>
     public typealias PrevP = AddOne<Zero>
@@ -36,7 +36,7 @@ public struct GCFConv0<B0: Natural>: GCFConvergent {
 ///   BTimesQ:    b * k_{n-1}
 ///   ATimesPrevQ: a * k_{n-2}
 ///   QResult:    b*k_{n-1} + a*k_{n-2} = k_n
-public struct GCFConvStep<
+public struct GCFConvergentStep<
     Prev: GCFConvergent,
     BTimesP: NaturalProduct,
     ATimesPrevP: NaturalProduct,
@@ -172,7 +172,7 @@ public protocol Matrix2x2 {
 }
 
 /// Concrete 2x2 matrix type.
-public struct Mat2<TopLeft: Natural, TopRight: Natural,
+public struct Matrix2<TopLeft: Natural, TopRight: Natural,
                    BottomLeft: Natural, BottomRight: Natural>: Matrix2x2 {
     public typealias A = TopLeft
     public typealias B = TopRight

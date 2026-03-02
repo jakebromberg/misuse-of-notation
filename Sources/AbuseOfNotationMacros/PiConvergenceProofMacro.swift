@@ -91,7 +91,7 @@ public struct PiConvergenceProofMacro: MemberMacro {
         var decls: [DeclSyntax] = gen.declarations()
 
         // --- Generate CF convergent chain ---
-        let cf0: DeclSyntax = "typealias _CF0 = GCFConv0<\(raw: peanoTypeName(for: 1))>"
+        let cf0: DeclSyntax = "typealias Convergent0 = GCFConvergent0<\(raw: peanoTypeName(for: 1))>"
         decls.append(cf0)
 
         for i in 1...depth {
@@ -118,17 +118,17 @@ public struct PiConvergenceProofMacro: MemberMacro {
             let ak = a * K[i - 1]
             let sumK = plusSuccChain(left: bk, right: ak)
 
-            let hsDecl: DeclSyntax = "typealias _CFS_H\(raw: String(i)) = \(raw: sumH)"
-            let ksDecl: DeclSyntax = "typealias _CFS_K\(raw: String(i)) = \(raw: sumK)"
+            let hsDecl: DeclSyntax = "typealias ConvergentSumH\(raw: String(i)) = \(raw: sumH)"
+            let ksDecl: DeclSyntax = "typealias ConvergentSumK\(raw: String(i)) = \(raw: sumK)"
             decls.append(hsDecl)
             decls.append(ksDecl)
 
-            let cfDecl: DeclSyntax = "typealias _CF\(raw: String(i)) = GCFConvStep<_CF\(raw: String(i - 1)), \(raw: bhp), \(raw: ahpp), _CFS_H\(raw: String(i)), \(raw: bkp), \(raw: akpp), _CFS_K\(raw: String(i))>"
+            let cfDecl: DeclSyntax = "typealias Convergent\(raw: String(i)) = GCFConvergentStep<Convergent\(raw: String(i - 1)), \(raw: bhp), \(raw: ahpp), ConvergentSumH\(raw: String(i)), \(raw: bkp), \(raw: akpp), ConvergentSumK\(raw: String(i))>"
             decls.append(cfDecl)
         }
 
         // --- Generate Leibniz partial sum chain ---
-        let ls1: DeclSyntax = "typealias _LS1 = LeibnizBase"
+        let ls1: DeclSyntax = "typealias LeibnizSum1 = LeibnizBase"
         decls.append(ls1)
 
         for k in 2...(depth + 1) {
@@ -143,15 +143,15 @@ public struct PiConvergenceProofMacro: MemberMacro {
                 // Subtraction: new_p = p*d - q, witnessed by new_p + q = p*d
                 let newP = p * d - q
                 let subWitness = plusSuccChain(left: newP, right: q)
-                let wDecl: DeclSyntax = "typealias _LSW\(raw: String(k)) = \(raw: subWitness)"
-                let sDecl: DeclSyntax = "typealias _LS\(raw: String(k)) = LeibnizSub<_LS\(raw: String(k - 1)), \(raw: pxd), \(raw: qxd), _LSW\(raw: String(k))>"
+                let wDecl: DeclSyntax = "typealias LeibnizWitness\(raw: String(k)) = \(raw: subWitness)"
+                let sDecl: DeclSyntax = "typealias LeibnizSum\(raw: String(k)) = LeibnizSub<LeibnizSum\(raw: String(k - 1)), \(raw: pxd), \(raw: qxd), LeibnizWitness\(raw: String(k))>"
                 decls.append(wDecl)
                 decls.append(sDecl)
             } else {
                 // Addition: new_p = p*d + q, witnessed by p*d + q = new_p
                 let addWitness = plusSuccChain(left: p * d, right: q)
-                let wDecl: DeclSyntax = "typealias _LSW\(raw: String(k)) = \(raw: addWitness)"
-                let sDecl: DeclSyntax = "typealias _LS\(raw: String(k)) = LeibnizAdd<_LS\(raw: String(k - 1)), \(raw: pxd), \(raw: qxd), _LSW\(raw: String(k))>"
+                let wDecl: DeclSyntax = "typealias LeibnizWitness\(raw: String(k)) = \(raw: addWitness)"
+                let sDecl: DeclSyntax = "typealias LeibnizSum\(raw: String(k)) = LeibnizAdd<LeibnizSum\(raw: String(k - 1)), \(raw: pxd), \(raw: qxd), LeibnizWitness\(raw: String(k))>"
                 decls.append(wDecl)
                 decls.append(sDecl)
             }
@@ -163,11 +163,11 @@ public struct PiConvergenceProofMacro: MemberMacro {
         var body = ""
         for i in 1...depth {
             let leibIdx = i + 1
-            body += "    assertEqual(_CF\(i).P.self, _LS\(leibIdx).Q.self)\n"
-            body += "    assertEqual(_CF\(i).Q.self, _LS\(leibIdx).P.self)\n"
+            body += "    assertEqual(Convergent\(i).P.self, LeibnizSum\(leibIdx).Q.self)\n"
+            body += "    assertEqual(Convergent\(i).Q.self, LeibnizSum\(leibIdx).P.self)\n"
         }
         let checkDecl: DeclSyntax = """
-        func _piCorrespondenceCheck() {
+        func piCorrespondenceCheck() {
         \(raw: body)}
         """
         decls.append(checkDecl)

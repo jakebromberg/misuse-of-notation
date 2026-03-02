@@ -3,7 +3,7 @@
 // Each protocol defines a theorem. Conditional conformances on Zero/AddOne
 // (or PlusZero/PlusSucc) provide base case + inductive step = proof for all
 // natural numbers. The protocols use plain associated types (no where
-// clauses) following the _TimesNk pattern; correctness is enforced
+// clauses) following the TimesNk pattern; correctness is enforced
 // structurally by the conformance definitions and verified via assertEqual
 // on specific instances.
 
@@ -37,20 +37,20 @@ extension AddOne: AddLeftZero where Predecessor: AddLeftZero {
 /// The associated type `Shifted` is structurally guaranteed to be a
 /// `NaturalSum` with `Left == AddOne<Self.Left>`, `Right == Self.Right`,
 /// `Total == AddOne<Self.Total>`.
-public protocol SuccLeftAdd: NaturalSum {
+public protocol SuccessorLeftAdd: NaturalSum {
     associatedtype Shifted: NaturalSum
 }
 
 // Base case: PlusZero<N> witnesses N + 0 = N
 // Shifted = PlusZero<S(N)> witnesses S(N) + 0 = S(N)
-extension PlusZero: SuccLeftAdd {
+extension PlusZero: SuccessorLeftAdd {
     public typealias Shifted = PlusZero<AddOne<N>>
 }
 
 // Inductive step: PlusSucc<P> witnesses A + S(B) = S(C) where P: A + B = C
 // If P.Shifted witnesses S(A) + B = S(C),
 // then PlusSucc<P.Shifted> witnesses S(A) + S(B) = S(S(C))
-extension PlusSucc: SuccLeftAdd where Proof: SuccLeftAdd {
+extension PlusSucc: SuccessorLeftAdd where Proof: SuccessorLeftAdd {
     public typealias Shifted = PlusSucc<Proof.Shifted>
 }
 
@@ -76,7 +76,7 @@ extension PlusZero: AddCommutative where N: AddLeftZero {
 // If P.Commuted witnesses B + A = C,
 // then P.Commuted.Shifted witnesses S(B) + A = S(C)
 extension PlusSucc: AddCommutative
-    where Proof: AddCommutative, Proof.Commuted: SuccLeftAdd
+    where Proof: AddCommutative, Proof.Commuted: SuccessorLeftAdd
 {
     public typealias Commuted = Proof.Commuted.Shifted
 }
@@ -87,27 +87,27 @@ extension PlusSucc: AddCommutative
 /// extension. Analogous to Seed<A> for _InductiveAdd, but wraps a proof
 /// instead of a number.
 ///
-/// Building c layers of AddOne on ProofSeed<P> and extracting AssocProof
+/// Building c layers of AddOne on ProofSeed<P> and extracting AssociativeProof
 /// yields PlusSucc^c(P): the associativity proof.
 public enum ProofSeed<P: NaturalSum>: Natural {
     public typealias Successor = AddOne<Self>
     public typealias Predecessor = SubOne<Zero>
 }
 
-/// For any chain AddOne^c(ProofSeed<P>), the AssocProof is PlusSucc^c(P),
+/// For any chain AddOne^c(ProofSeed<P>), the AssociativeProof is PlusSucc^c(P),
 /// witnessing a + (b + c) = d + c where P witnesses a + b = d.
 ///
 /// Universality is twofold: parametric over P (any proof) and inductive
 /// over c (any natural). This solves the "two-variable" problem noted in
 /// section 5.2 of the future-work document.
 public protocol AddAssociative: Natural {
-    associatedtype AssocProof: NaturalSum
+    associatedtype AssociativeProof: NaturalSum
 }
 
 extension ProofSeed: AddAssociative {
-    public typealias AssocProof = P
+    public typealias AssociativeProof = P
 }
 
 extension AddOne: AddAssociative where Predecessor: AddAssociative {
-    public typealias AssocProof = PlusSucc<Predecessor.AssocProof>
+    public typealias AssociativeProof = PlusSucc<Predecessor.AssociativeProof>
 }

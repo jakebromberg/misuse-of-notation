@@ -25,31 +25,31 @@ final class GoldenRatioProofMacroTests: XCTestCase {
             expandedSource: """
             enum GoldenRatioProof {
 
-                typealias _FibW1 = PlusSucc<PlusZero<Zero>>
+                typealias FibonacciWitness1 = PlusSucc<PlusZero<Zero>>
 
-                typealias _Fib1 = FibStep<Fib0, _FibW1>
+                typealias Fibonacci1 = FibonacciStep<Fibonacci0, FibonacciWitness1>
 
-                typealias _FibW2 = PlusSucc<PlusZero<AddOne<Zero>>>
+                typealias FibonacciWitness2 = PlusSucc<PlusZero<AddOne<Zero>>>
 
-                typealias _Fib2 = FibStep<_Fib1, _FibW2>
+                typealias Fibonacci2 = FibonacciStep<Fibonacci1, FibonacciWitness2>
 
-                typealias _FibW3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
+                typealias FibonacciWitness3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
 
-                typealias _Fib3 = FibStep<_Fib2, _FibW3>
+                typealias Fibonacci3 = FibonacciStep<Fibonacci2, FibonacciWitness3>
 
-                typealias _CF0 = GCFConv0<AddOne<Zero>>
+                typealias Convergent0 = GCFConvergent0<AddOne<Zero>>
 
-                typealias _CFS_H1 = PlusSucc<PlusZero<AddOne<Zero>>>
+                typealias ConvergentSumH1 = PlusSucc<PlusZero<AddOne<Zero>>>
 
-                typealias _CFS_K1 = PlusZero<AddOne<Zero>>
+                typealias ConvergentSumK1 = PlusZero<AddOne<Zero>>
 
-                typealias _CF1 = GCFConvStep<_CF0, AddOne<Zero>.OneTimesProof, AddOne<Zero>.OneTimesProof, _CFS_H1, AddOne<Zero>.OneTimesProof, Zero.OneTimesProof, _CFS_K1>
+                typealias Convergent1 = GCFConvergentStep<Convergent0, AddOne<Zero>.OneTimesProof, AddOne<Zero>.OneTimesProof, ConvergentSumH1, AddOne<Zero>.OneTimesProof, Zero.OneTimesProof, ConvergentSumK1>
 
-                func _goldenRatioCorrespondenceCheck() {
-                    assertEqual(_CF0.P.self, _Fib2.Current.self)
-                    assertEqual(_CF0.Q.self, _Fib1.Current.self)
-                    assertEqual(_CF1.P.self, _Fib3.Current.self)
-                    assertEqual(_CF1.Q.self, _Fib2.Current.self)
+                func goldenRatioCorrespondenceCheck() {
+                    assertEqual(Convergent0.P.self, Fibonacci2.Current.self)
+                    assertEqual(Convergent0.Q.self, Fibonacci1.Current.self)
+                    assertEqual(Convergent1.P.self, Fibonacci3.Current.self)
+                    assertEqual(Convergent1.Q.self, Fibonacci2.Current.self)
                 }
             }
             """,

@@ -22,9 +22,9 @@ final class FibonacciProofMacroTests: XCTestCase {
             expandedSource: """
             enum FibProof {
 
-                typealias _FibW1 = PlusSucc<PlusZero<Zero>>
+                typealias FibonacciWitness1 = PlusSucc<PlusZero<Zero>>
 
-                typealias _Fib1 = FibStep<Fib0, _FibW1>
+                typealias Fibonacci1 = FibonacciStep<Fibonacci0, FibonacciWitness1>
             }
             """,
             macros: fibonacciProofMacros
@@ -40,17 +40,17 @@ final class FibonacciProofMacroTests: XCTestCase {
             expandedSource: """
             enum FibProof {
 
-                typealias _FibW1 = PlusSucc<PlusZero<Zero>>
+                typealias FibonacciWitness1 = PlusSucc<PlusZero<Zero>>
 
-                typealias _Fib1 = FibStep<Fib0, _FibW1>
+                typealias Fibonacci1 = FibonacciStep<Fibonacci0, FibonacciWitness1>
 
-                typealias _FibW2 = PlusSucc<PlusZero<AddOne<Zero>>>
+                typealias FibonacciWitness2 = PlusSucc<PlusZero<AddOne<Zero>>>
 
-                typealias _Fib2 = FibStep<_Fib1, _FibW2>
+                typealias Fibonacci2 = FibonacciStep<Fibonacci1, FibonacciWitness2>
 
-                typealias _FibW3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
+                typealias FibonacciWitness3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
 
-                typealias _Fib3 = FibStep<_Fib2, _FibW3>
+                typealias Fibonacci3 = FibonacciStep<Fibonacci2, FibonacciWitness3>
             }
             """,
             macros: fibonacciProofMacros

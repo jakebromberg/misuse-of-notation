@@ -59,52 +59,52 @@ extension Sum where L == N9 {
 
 /// Inductive multiplication helper protocols.
 ///
-/// Each `_TimesNk` protocol threads recursion through `AddOne`'s `Predecessor`,
+/// Each `TimesNk` protocol threads recursion through `AddOne`'s `Predecessor`,
 /// letting a single constrained extension handle any `R`.
 
-public protocol _TimesN2: Natural {
-    associatedtype _TimesN2Result: Natural
+public protocol TimesN2: Natural {
+    associatedtype TimesN2Result: Natural
 }
-extension Zero: _TimesN2 {
-    public typealias _TimesN2Result = Zero
+extension Zero: TimesN2 {
+    public typealias TimesN2Result = Zero
 }
-extension AddOne: _TimesN2 where Predecessor: _TimesN2 {
-    public typealias _TimesN2Result = AddOne<AddOne<Predecessor._TimesN2Result>>
-}
-
-public protocol _TimesN3: Natural {
-    associatedtype _TimesN3Result: Natural
-}
-extension Zero: _TimesN3 {
-    public typealias _TimesN3Result = Zero
-}
-extension AddOne: _TimesN3 where Predecessor: _TimesN3 {
-    public typealias _TimesN3Result = AddOne<AddOne<AddOne<Predecessor._TimesN3Result>>>
+extension AddOne: TimesN2 where Predecessor: TimesN2 {
+    public typealias TimesN2Result = AddOne<AddOne<Predecessor.TimesN2Result>>
 }
 
-public protocol _TimesN5: Natural {
-    associatedtype _TimesN5Result: Natural
+public protocol TimesN3: Natural {
+    associatedtype TimesN3Result: Natural
 }
-extension Zero: _TimesN5 {
-    public typealias _TimesN5Result = Zero
+extension Zero: TimesN3 {
+    public typealias TimesN3Result = Zero
 }
-extension AddOne: _TimesN5 where Predecessor: _TimesN5 {
-    public typealias _TimesN5Result = AddOne<AddOne<AddOne<AddOne<AddOne<Predecessor._TimesN5Result>>>>>
+extension AddOne: TimesN3 where Predecessor: TimesN3 {
+    public typealias TimesN3Result = AddOne<AddOne<AddOne<Predecessor.TimesN3Result>>>
 }
 
-public protocol _TimesN7: Natural {
-    associatedtype _TimesN7Result: Natural
+public protocol TimesN5: Natural {
+    associatedtype TimesN5Result: Natural
 }
-extension Zero: _TimesN7 {
-    public typealias _TimesN7Result = Zero
+extension Zero: TimesN5 {
+    public typealias TimesN5Result = Zero
 }
-extension AddOne: _TimesN7 where Predecessor: _TimesN7 {
-    public typealias _TimesN7Result = AddOne<AddOne<AddOne<AddOne<AddOne<AddOne<AddOne<Predecessor._TimesN7Result>>>>>>>
+extension AddOne: TimesN5 where Predecessor: TimesN5 {
+    public typealias TimesN5Result = AddOne<AddOne<AddOne<AddOne<AddOne<Predecessor.TimesN5Result>>>>>
+}
+
+public protocol TimesN7: Natural {
+    associatedtype TimesN7Result: Natural
+}
+extension Zero: TimesN7 {
+    public typealias TimesN7Result = Zero
+}
+extension AddOne: TimesN7 where Predecessor: TimesN7 {
+    public typealias TimesN7Result = AddOne<AddOne<AddOne<AddOne<AddOne<AddOne<AddOne<Predecessor.TimesN7Result>>>>>>>
 }
 
 /// Type-level multiplication: `Product<L, R>.Result` is the product of `L` and `R`.
 ///
-/// Defined by constrained extensions using inductive `_TimesNk` protocols.
+/// Defined by constrained extensions using inductive `TimesNk` protocols.
 public enum Product<L: Natural, R: Natural> {}
 
 extension Product: NaturalExpression where L == N0 {
@@ -113,11 +113,11 @@ extension Product: NaturalExpression where L == N0 {
 extension Product where L == N1 {
     public typealias Result = R
 }
-extension Product where L == N2, R: _TimesN2 {
-    public typealias Result = R._TimesN2Result
+extension Product where L == N2, R: TimesN2 {
+    public typealias Result = R.TimesN2Result
 }
-extension Product where L == N3, R: _TimesN3 {
-    public typealias Result = R._TimesN3Result
+extension Product where L == N3, R: TimesN3 {
+    public typealias Result = R.TimesN3Result
 }
 
 // MARK: - Extended type aliases
@@ -126,14 +126,14 @@ public typealias N10 = AddOne<N9>
 public typealias N11 = AddOne<N10>
 public typealias N12 = AddOne<N11>
 public typealias N13 = AddOne<N12>
-public typealias N15 = N5._TimesN3Result
-public typealias N25 = N5._TimesN5Result
+public typealias N15 = N5.TimesN3Result
+public typealias N25 = N5.TimesN5Result
 public typealias N26 = AddOne<N25>
-public typealias N30 = N15._TimesN2Result
-public typealias N35 = N7._TimesN5Result
-public typealias N50 = N25._TimesN2Result
-public typealias N75 = N25._TimesN3Result
+public typealias N30 = N15.TimesN2Result
+public typealias N35 = N7.TimesN5Result
+public typealias N50 = N25.TimesN2Result
+public typealias N75 = N25.TimesN3Result
 public typealias N76 = AddOne<N75>
-public typealias N91 = N13._TimesN7Result
+public typealias N91 = N13.TimesN7Result
 public typealias N17 = AddOne<AddOne<AddOne<AddOne<N13>>>>
-public typealias N105 = N35._TimesN3Result
+public typealias N105 = N35.TimesN3Result

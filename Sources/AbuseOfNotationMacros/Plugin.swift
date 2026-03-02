@@ -9,7 +9,7 @@ struct AbuseOfNotationPlugin: CompilerPlugin {
         PiConvergenceProofMacro.self,
         GoldenRatioProofMacro.self,
         Sqrt2ConvergenceProofMacro.self,
-        MulCommProofMacro.self,
+        MultiplicationCommutativityProofMacro.self,
         WallisProductProofMacro.self,
     ]
 }

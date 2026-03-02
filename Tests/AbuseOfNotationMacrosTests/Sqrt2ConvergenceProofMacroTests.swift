@@ -25,27 +25,27 @@ final class Sqrt2ConvergenceProofMacroTests: XCTestCase {
             expandedSource: """
             enum Sqrt2Proof {
 
-                typealias _CF0 = GCFConv0<AddOne<Zero>>
+                typealias Convergent0 = GCFConvergent0<AddOne<Zero>>
 
-                typealias _CFS_H1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
+                typealias ConvergentSumH1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
 
-                typealias _CFS_K1 = PlusZero<AddOne<AddOne<Zero>>>
+                typealias ConvergentSumK1 = PlusZero<AddOne<AddOne<Zero>>>
 
-                typealias _CF1 = GCFConvStep<_CF0, AddOne<Zero>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, _CFS_H1, AddOne<Zero>.OneTimesProof.Distributed, Zero.OneTimesProof, _CFS_K1>
+                typealias Convergent1 = GCFConvergentStep<Convergent0, AddOne<Zero>.OneTimesProof.Distributed, AddOne<Zero>.OneTimesProof, ConvergentSumH1, AddOne<Zero>.OneTimesProof.Distributed, Zero.OneTimesProof, ConvergentSumK1>
 
-                typealias _MAT0 = Mat2<AddOne<Zero>, AddOne<Zero>, AddOne<Zero>, Zero>
+                typealias MatrixPower0 = Matrix2<AddOne<Zero>, AddOne<Zero>, AddOne<Zero>, Zero>
 
-                typealias _MATS_AC1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
+                typealias MatrixSumAC1 = PlusSucc<PlusZero<AddOne<AddOne<Zero>>>>
 
-                typealias _MATS_BD1 = PlusZero<AddOne<AddOne<Zero>>>
+                typealias MatrixSumBD1 = PlusZero<AddOne<AddOne<Zero>>>
 
-                typealias _MAT1 = Sqrt2MatStep<_MAT0, AddOne<Zero>.OneTimesProof.Distributed, _MATS_AC1, AddOne<Zero>.OneTimesProof.Distributed, _MATS_BD1>
+                typealias MatrixPower1 = Sqrt2MatStep<MatrixPower0, AddOne<Zero>.OneTimesProof.Distributed, MatrixSumAC1, AddOne<Zero>.OneTimesProof.Distributed, MatrixSumBD1>
 
-                func _sqrt2CorrespondenceCheck() {
-                    assertEqual(_MAT0.A.self, _CF0.P.self)
-                    assertEqual(_MAT0.B.self, _CF0.Q.self)
-                    assertEqual(_MAT1.A.self, _CF1.P.self)
-                    assertEqual(_MAT1.B.self, _CF1.Q.self)
+                func sqrt2CorrespondenceCheck() {
+                    assertEqual(MatrixPower0.A.self, Convergent0.P.self)
+                    assertEqual(MatrixPower0.B.self, Convergent0.Q.self)
+                    assertEqual(MatrixPower1.A.self, Convergent1.P.self)
+                    assertEqual(MatrixPower1.B.self, Convergent1.Q.self)
                 }
             }
             """,

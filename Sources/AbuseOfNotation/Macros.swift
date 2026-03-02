@@ -14,7 +14,7 @@ public macro GoldenRatioProof(depth n: Int) = #externalMacro(module: "AbuseOfNot
 public macro Sqrt2ConvergenceProof(depth n: Int) = #externalMacro(module: "AbuseOfNotationMacros", type: "Sqrt2ConvergenceProofMacro")
 
 @attached(member, names: arbitrary)
-public macro MulCommProof(leftOperand: Int, depth: Int) = #externalMacro(module: "AbuseOfNotationMacros", type: "MulCommProofMacro")
+public macro MultiplicationCommutativityProof(leftOperand: Int, depth: Int) = #externalMacro(module: "AbuseOfNotationMacros", type: "MultiplicationCommutativityProofMacro")
 
 @attached(member, names: arbitrary)
 public macro WallisProductProof(depth n: Int) = #externalMacro(module: "AbuseOfNotationMacros", type: "WallisProductProofMacro")

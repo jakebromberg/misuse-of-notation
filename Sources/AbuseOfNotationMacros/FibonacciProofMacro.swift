@@ -14,7 +14,7 @@ func plusSuccChain(left: Int, right: Int) -> String {
     return result
 }
 
-/// `#fibonacciProof(upTo: n)` -- generates FibStep witness chains proving
+/// `#fibonacciProof(upTo: n)` -- generates FibonacciStep witness chains proving
 /// the Fibonacci recurrence F(i-1) + F(i) = F(i+1) for i = 1 through n.
 ///
 /// The macro computes Fibonacci numbers as regular integers at compile time,
@@ -23,12 +23,12 @@ func plusSuccChain(left: Int, right: Int) -> String {
 ///
 /// Expansion of `#fibonacciProof(upTo: 3)`:
 /// ```swift
-/// typealias FibW1 = PlusSucc<PlusZero<Zero>>
-/// typealias Fib1 = FibStep<Fib0, FibW1>
-/// typealias FibW2 = PlusSucc<PlusZero<AddOne<Zero>>>
-/// typealias Fib2 = FibStep<Fib1, FibW2>
-/// typealias FibW3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
-/// typealias Fib3 = FibStep<Fib2, FibW3>
+/// typealias FibonacciWitness1 = PlusSucc<PlusZero<Zero>>
+/// typealias Fibonacci1 = FibonacciStep<Fibonacci0, FibonacciWitness1>
+/// typealias FibonacciWitness2 = PlusSucc<PlusZero<AddOne<Zero>>>
+/// typealias Fibonacci2 = FibonacciStep<Fibonacci1, FibonacciWitness2>
+/// typealias FibonacciWitness3 = PlusSucc<PlusSucc<PlusZero<AddOne<Zero>>>>
+/// typealias Fibonacci3 = FibonacciStep<Fibonacci2, FibonacciWitness3>
 /// ```
 public struct FibonacciProofMacro: MemberMacro {
     public static func expansion(
@@ -62,10 +62,10 @@ public struct FibonacciProofMacro: MemberMacro {
             // This proves F(i-1) + F(i) = F(i+1)
             let witness = plusSuccChain(left: left, right: right)
 
-            let prevName = i == 1 ? "Fib0" : "_Fib\(i - 1)"
+            let prevName = i == 1 ? "Fibonacci0" : "Fibonacci\(i - 1)"
 
-            let wDecl: DeclSyntax = "typealias _FibW\(raw: String(i)) = \(raw: witness)"
-            let sDecl: DeclSyntax = "typealias _Fib\(raw: String(i)) = FibStep<\(raw: prevName), _FibW\(raw: String(i))>"
+            let wDecl: DeclSyntax = "typealias FibonacciWitness\(raw: String(i)) = \(raw: witness)"
+            let sDecl: DeclSyntax = "typealias Fibonacci\(raw: String(i)) = FibonacciStep<\(raw: prevName), FibonacciWitness\(raw: String(i))>"
 
             decls.append(wDecl)
             decls.append(sDecl)

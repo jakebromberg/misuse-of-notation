@@ -22,20 +22,20 @@ final class ProductConformanceMacroTests: XCTestCase {
             expandedSource: """
             enum Product<L: Natural, R: Natural> {}
 
-            protocol _TimesN2: Natural {
-                associatedtype _TimesN2Result: Natural
+            protocol TimesN2: Natural {
+                associatedtype TimesN2Result: Natural
             }
 
-            extension Zero: _TimesN2 {
-                typealias _TimesN2Result = Zero
+            extension Zero: TimesN2 {
+                typealias TimesN2Result = Zero
             }
 
-            extension AddOne: _TimesN2 where Predecessor: _TimesN2 {
-                typealias _TimesN2Result = AddOne<AddOne<Predecessor._TimesN2Result>>
+            extension AddOne: TimesN2 where Predecessor: TimesN2 {
+                typealias TimesN2Result = AddOne<AddOne<Predecessor.TimesN2Result>>
             }
 
-            extension Product where L == AddOne<AddOne<Zero>>, R: _TimesN2 {
-                typealias Result = R._TimesN2Result
+            extension Product where L == AddOne<AddOne<Zero>>, R: TimesN2 {
+                typealias Result = R.TimesN2Result
             }
             """,
             macros: productConformanceMacros
@@ -51,20 +51,20 @@ final class ProductConformanceMacroTests: XCTestCase {
             expandedSource: """
             enum Product<L: Natural, R: Natural> {}
 
-            protocol _TimesN3: Natural {
-                associatedtype _TimesN3Result: Natural
+            protocol TimesN3: Natural {
+                associatedtype TimesN3Result: Natural
             }
 
-            extension Zero: _TimesN3 {
-                typealias _TimesN3Result = Zero
+            extension Zero: TimesN3 {
+                typealias TimesN3Result = Zero
             }
 
-            extension AddOne: _TimesN3 where Predecessor: _TimesN3 {
-                typealias _TimesN3Result = AddOne<AddOne<AddOne<Predecessor._TimesN3Result>>>
+            extension AddOne: TimesN3 where Predecessor: TimesN3 {
+                typealias TimesN3Result = AddOne<AddOne<AddOne<Predecessor.TimesN3Result>>>
             }
 
-            extension Product where L == AddOne<AddOne<AddOne<Zero>>>, R: _TimesN3 {
-                typealias Result = R._TimesN3Result
+            extension Product where L == AddOne<AddOne<AddOne<Zero>>>, R: TimesN3 {
+                typealias Result = R.TimesN3Result
             }
             """,
             macros: productConformanceMacros

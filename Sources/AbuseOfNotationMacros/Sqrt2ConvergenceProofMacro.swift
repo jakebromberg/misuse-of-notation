@@ -8,8 +8,8 @@ import SwiftSyntaxMacros
 ///
 /// At compile time, the macro computes:
 ///   1. Product witness chains for factors 1 and 2
-///   2. CF convergent chain _CF0..._CF{n} for [1; 2, 2, ...]
-///   3. Matrix power chain _MAT0..._MAT{n} via Sqrt2MatStep
+///   2. CF convergent chain Convergent0...Convergent{n} for [1; 2, 2, ...]
+///   3. Matrix power chain Matrix0...Matrix{n} via Sqrt2MatStep
 ///   4. Correspondence check: MAT_i entries match CF_i convergents
 ///
 /// The type checker independently verifies every witness chain.
@@ -53,9 +53,9 @@ public struct Sqrt2ConvergenceProofMacro: MemberMacro {
 
         // --- Generate CF convergent chain ---
         // All products use factors 1 and 2, handled by universal theorems
-        // (MulLeftOne and SuccLeftMul.Distributed).
+        // (MultiplicationLeftOne and SuccessorLeftMultiplication.Distributed).
         var decls: [DeclSyntax] = []
-        decls.append("typealias _CF0 = GCFConv0<\(raw: peanoTypeName(for: 1))>")
+        decls.append("typealias Convergent0 = GCFConvergent0<\(raw: peanoTypeName(for: 1))>")
 
         for i in 1...depth {
             let b = 2
@@ -72,13 +72,13 @@ public struct Sqrt2ConvergenceProofMacro: MemberMacro {
             let ak = 1 * K[i - 1]
             let sumK = plusSuccChain(left: bk, right: ak)
 
-            decls.append("typealias _CFS_H\(raw: String(i)) = \(raw: sumH)")
-            decls.append("typealias _CFS_K\(raw: String(i)) = \(raw: sumK)")
-            decls.append("typealias _CF\(raw: String(i)) = GCFConvStep<_CF\(raw: String(i - 1)), \(raw: bhp), \(raw: ahpp), _CFS_H\(raw: String(i)), \(raw: bkp), \(raw: akpp), _CFS_K\(raw: String(i))>")
+            decls.append("typealias ConvergentSumH\(raw: String(i)) = \(raw: sumH)")
+            decls.append("typealias ConvergentSumK\(raw: String(i)) = \(raw: sumK)")
+            decls.append("typealias Convergent\(raw: String(i)) = GCFConvergentStep<Convergent\(raw: String(i - 1)), \(raw: bhp), \(raw: ahpp), ConvergentSumH\(raw: String(i)), \(raw: bkp), \(raw: akpp), ConvergentSumK\(raw: String(i))>")
         }
 
         // --- Generate matrix power chain ---
-        decls.append("typealias _MAT0 = Mat2<\(raw: peanoTypeName(for: matA[0])), \(raw: peanoTypeName(for: matB[0])), \(raw: peanoTypeName(for: matC[0])), \(raw: peanoTypeName(for: matD[0]))>")
+        decls.append("typealias MatrixPower0 = Matrix2<\(raw: peanoTypeName(for: matA[0])), \(raw: peanoTypeName(for: matB[0])), \(raw: peanoTypeName(for: matC[0])), \(raw: peanoTypeName(for: matD[0]))>")
 
         for i in 1...depth {
             let prevA = matA[i - 1], prevB = matB[i - 1]
@@ -93,19 +93,19 @@ public struct Sqrt2ConvergenceProofMacro: MemberMacro {
             // Sum witness: 2*prevB + prevD
             let sumBD = plusSuccChain(left: 2 * prevB, right: prevD)
 
-            decls.append("typealias _MATS_AC\(raw: String(i)) = \(raw: sumAC)")
-            decls.append("typealias _MATS_BD\(raw: String(i)) = \(raw: sumBD)")
-            decls.append("typealias _MAT\(raw: String(i)) = Sqrt2MatStep<_MAT\(raw: String(i - 1)), \(raw: twoAName), _MATS_AC\(raw: String(i)), \(raw: twoBName), _MATS_BD\(raw: String(i))>")
+            decls.append("typealias MatrixSumAC\(raw: String(i)) = \(raw: sumAC)")
+            decls.append("typealias MatrixSumBD\(raw: String(i)) = \(raw: sumBD)")
+            decls.append("typealias MatrixPower\(raw: String(i)) = Sqrt2MatStep<MatrixPower\(raw: String(i - 1)), \(raw: twoAName), MatrixSumAC\(raw: String(i)), \(raw: twoBName), MatrixSumBD\(raw: String(i))>")
         }
 
         // --- Generate correspondence check ---
         var body = ""
         for i in 0...depth {
-            body += "    assertEqual(_MAT\(i).A.self, _CF\(i).P.self)\n"
-            body += "    assertEqual(_MAT\(i).B.self, _CF\(i).Q.self)\n"
+            body += "    assertEqual(MatrixPower\(i).A.self, Convergent\(i).P.self)\n"
+            body += "    assertEqual(MatrixPower\(i).B.self, Convergent\(i).Q.self)\n"
         }
         let checkDecl: DeclSyntax = """
-        func _sqrt2CorrespondenceCheck() {
+        func sqrt2CorrespondenceCheck() {
         \(raw: body)}
         """
         decls.append(checkDecl)

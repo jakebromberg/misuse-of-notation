@@ -14,19 +14,19 @@ import SwiftSyntaxMacros
 /// Each expansion generates `D+1` paired typealiases:
 /// ```swift
 /// enum MulComm4 {
-///     typealias _Fwd0 = TimesZero<N4>
-///     typealias _Rev0 = N4.ZeroTimesProof
-///     typealias _Fwd1 = TimesGroup<TimesTick<TimesTick<TimesTick<TimesTick<_Fwd0>>>>>
-///     typealias _Rev1 = _Rev0.Distributed
+///     typealias Forward0 = TimesZero<N4>
+///     typealias Reverse0 = N4.ZeroTimesProof
+///     typealias Forward1 = TimesGroup<TimesTick<TimesTick<TimesTick<TimesTick<Forward0>>>>>
+///     typealias Reverse1 = Reverse0.Distributed
 ///     // ...
 /// }
 /// ```
 ///
-/// The forward proof (`_FwdK`) witnesses `A * K` using the flat encoding:
+/// The forward proof (`ForwardK`) witnesses `A * K` using the flat encoding:
 /// each step wraps in A `TimesTick`s plus one `TimesGroup`.
-/// The reverse proof (`_RevK`) witnesses `K * A` via `SuccLeftMul.Distributed`.
-/// The type checker verifies that `_FwdK.Total == _RevK.Total` when asserted.
-public struct MulCommProofMacro: MemberMacro {
+/// The reverse proof (`ReverseK`) witnesses `K * A` via `SuccessorLeftMultiplication.Distributed`.
+/// The type checker verifies that `ForwardK.Total == ReverseK.Total` when asserted.
+public struct MultiplicationCommutativityProofMacro: MemberMacro {
     public static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -68,12 +68,12 @@ public struct MulCommProofMacro: MemberMacro {
         var decls: [DeclSyntax] = []
 
         // Base case (b = 0): A * 0 = 0 and 0 * A = 0
-        decls.append("typealias _Fwd0 = TimesZero<\(raw: peano)>")
-        decls.append("typealias _Rev0 = \(raw: peano).ZeroTimesProof")
+        decls.append("typealias Forward0 = TimesZero<\(raw: peano)>")
+        decls.append("typealias Reverse0 = \(raw: peano).ZeroTimesProof")
 
         // Inductive steps (b = 1 through d)
         for b in 1...d {
-            let prev = "_Fwd\(b - 1)"
+            let prev = "Forward\(b - 1)"
 
             // Forward: TimesGroup<TimesTick^A<prev>>
             let fwd = "TimesGroup<"
@@ -82,10 +82,10 @@ public struct MulCommProofMacro: MemberMacro {
                 + String(repeating: ">", count: a + 1)
 
             // Reverse: prev.Distributed
-            let rev = "_Rev\(b - 1).Distributed"
+            let rev = "Reverse\(b - 1).Distributed"
 
-            decls.append("typealias _Fwd\(raw: String(b)) = \(raw: fwd)")
-            decls.append("typealias _Rev\(raw: String(b)) = \(raw: rev)")
+            decls.append("typealias Forward\(raw: String(b)) = \(raw: fwd)")
+            decls.append("typealias Reverse\(raw: String(b)) = \(raw: rev)")
         }
 
         return decls

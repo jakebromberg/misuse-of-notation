@@ -56,26 +56,26 @@ The `NaturalProduct` protocol witnesses that `Left * Right = Total`:
 
 ```swift
 // Proof that 2 * 3 = 6
-// Chain: 2*0=0, 0+2=2 so 2*1=2, 2+2=4 so 2*2=4, 4+2=6 so 2*3=6
-typealias Mul2x0 = TimesZero<N2>
-typealias Add0p2 = PlusSucc<PlusSucc<PlusZero<N0>>>
-typealias Mul2x1 = TimesSucc<Mul2x0, Add0p2>
-typealias Add2p2 = PlusSucc<PlusSucc<PlusZero<N2>>>
-typealias Mul2x2 = TimesSucc<Mul2x1, Add2p2>
-typealias Add4p2 = PlusSucc<PlusSucc<PlusZero<N4>>>
-typealias Mul2x3 = TimesSucc<Mul2x2, Add4p2>
-assertEqual(Mul2x3.Total.self, N6.self)
+// Chain: 2*0 = 0, 0+2 = 2 so 2*1 = 2, 2+2 = 4 so 2*2 = 4, 4+2 = 6 so 2*3 = 6
+typealias Multiply2Times0 = TimesZero<N2>
+typealias Add0Plus2 = PlusSucc<PlusSucc<PlusZero<N0>>>
+typealias Multiply2Times1 = TimesSucc<Multiply2Times0, Add0Plus2>
+typealias Add2Plus2 = PlusSucc<PlusSucc<PlusZero<N2>>>
+typealias Multiply2Times2 = TimesSucc<Multiply2Times1, Add2Plus2>
+typealias Add4Plus2 = PlusSucc<PlusSucc<PlusZero<N4>>>
+typealias Multiply2Times3 = TimesSucc<Multiply2Times2, Add4Plus2>
+assertEqual(Multiply2Times3.Total.self, N6.self)
 ```
 
 The tutorial uses the flat encoding (`TimesTick`/`TimesGroup`) for universal multiplication theorems, which decomposes each step into primitives without where clauses.
 
 ## Macros as proof generators
 
-Writing witness chains by hand is explicit but tedious -- a proof of `F(10) = 55` requires threading 10 `PlusSucc`/`PlusZero` witnesses through `FibStep` chains. Swift macros automate this by computing arithmetic at compile time and emitting the witness types that the type checker independently verifies.
+Writing witness chains by hand is explicit but tedious -- a proof of `F(10) = 55` requires threading 10 `PlusSucc`/`PlusZero` witnesses through `FibonacciStep` chains. Swift macros automate this by computing arithmetic at compile time and emitting the witness types that the type checker independently verifies.
 
 The architecture has three layers:
 
-1. **Protocol** (human-authored) -- states the theorem (e.g., `FibVerified` requires `SumWitness` proving `Prev + Current = Next`)
+1. **Protocol** (human-authored) -- states the theorem (e.g., `FibonacciVerified` requires `SumWitness` proving `Prev + Current = Next`)
 2. **Macro** (proof search) -- computes integers at compile time and emits witness chains as typealiases
 3. **Type checker** (proof verifier) -- structurally verifies every `where` constraint. If the macro emits a wrong witness, compilation fails.
 
@@ -83,10 +83,10 @@ Both proof-generating macros use `@attached(member, names: arbitrary)`, generati
 
 ```swift
 @FibonacciProof(upTo: 10)
-enum FibProof {}
+enum FibonacciProof {}
 
-assertEqual(FibProof._Fib5.Current.self, N5.self)  // F(5) = 5
-assertEqual(FibProof._Fib6.Current.self, N8.self)  // F(6) = 8
+assertEqual(FibonacciProof.Fibonacci5.Current.self, N5.self)  // F(5) = 5
+assertEqual(FibonacciProof.Fibonacci6.Current.self, N8.self)  // F(6) = 8
 ```
 
 ## A split dependent type system
@@ -103,7 +103,7 @@ The separation is a feature. The normalizer can compute anything, but the verifi
 
 The CF recurrence `h_{n+1} = a_n * h_n + h_{n-1}` requires the coefficient `a_n` to depend on the depth `n`. A full dependent type system would normalize `a_n` at abstract `n`; Swift's type checker cannot. Coinductive streams encode the *identity* of an irrational number (its coefficient sequence) but not the *computation* of convergents from that sequence.
 
-Universal theorems work when the inductive step is structurally uniform -- the same operation at every depth. `AddCommutative` applies the same `SuccLeftAdd` transformation at each inductive step regardless of the proof's shape. Bounded proofs are needed when the step varies: different CF coefficients at each depth, different Wallis factors at each step, different Fibonacci sums at each level.
+Universal theorems work when the inductive step is structurally uniform -- the same operation at every depth. `AddCommutative` applies the same `SuccessorLeftAdd` transformation at each inductive step regardless of the proof's shape. Bounded proofs are needed when the step varies: different CF coefficients at each depth, different Wallis factors at each step, different Fibonacci sums at each level.
 
 This is the precise boundary between what Swift's type system can prove universally (via conditional conformance as structural induction) and what requires macro assistance (via compile-time computation as normalization).
 
@@ -118,11 +118,11 @@ At every depth n, the CF convergent h_n/k_n equals 1/S_{n+1}, where S_{n+1} is t
 
 ```swift
 @PiConvergenceProof(depth: 3)
-enum PiProof {}
+enum PiConvergenceProof {}
 
 // CF convergent h_2/k_2 = 15/13 is the reciprocal of Leibniz S_3 = 13/15
-assertEqual(PiProof._CF2.P.self, PiProof._LS3.Q.self)  // 15 = 15
-assertEqual(PiProof._CF2.Q.self, PiProof._LS3.P.self)  // 13 = 13
+assertEqual(PiConvergenceProof.Convergent2.P.self, PiConvergenceProof.LeibnizSum3.Q.self)  // 15 = 15
+assertEqual(PiConvergenceProof.Convergent2.Q.self, PiConvergenceProof.LeibnizSum3.P.self)  // 13 = 13
 ```
 
 Since both sequences converge and their values agree at every depth, they converge to the same limit. The compilation itself is the proof.
@@ -145,10 +145,10 @@ This difference-of-squares identity is provable at the type level via a `PlusSuc
 
 ```swift
 @WallisProductProof(depth: 2)
-enum WallisProof {}
+enum WallisProductProof {}
 
-assertEqual(WallisProof._W1.P.self, N4.self)   // W_1 numerator = 4
-assertEqual(WallisProof._W1.Q.self, N3.self)   // W_1 denominator = 3
+assertEqual(WallisProductProof.Wallis1.P.self, N4.self)   // W_1 numerator = 4
+assertEqual(WallisProductProof.Wallis1.Q.self, N3.self)   // W_1 denominator = 3
 ```
 
 The macro also emits a factor correspondence check proving (2k-1)(2k+1) + 1 = (2k)^2 at each depth. The proof is self-contained: `WallisStep` constraints verify each multiplication, and the factor correspondence proves the difference-of-squares identity.
@@ -161,15 +161,15 @@ The golden ratio phi = (1 + sqrt(5))/2 has the simplest continued fraction: [1; 
 @GoldenRatioProof(depth: 5)
 enum GoldenRatioProof {}
 
-assertEqual(GoldenRatioProof._CF5.P.self, N13.self)  // h_5 = 13 = F(7)
-assertEqual(GoldenRatioProof._CF5.Q.self, N8.self)   // k_5 = 8  = F(6)
+assertEqual(GoldenRatioProof.Convergent5.P.self, N13.self)  // h_5 = 13 = F(7)
+assertEqual(GoldenRatioProof.Convergent5.Q.self, N8.self)   // k_5 = 8  = F(6)
 ```
 
 ## Universal addition theorems
 
 The proofs above are depth-bounded: macros generate witness chains for specific values. Universal theorems, by contrast, hold for ALL natural numbers. The proof mechanism is conditional conformance -- Swift's version of structural induction.
 
-Each theorem is a protocol with a plain associated type (no `where` clauses, following the `_TimesNk` pattern). The base-case conformance on `Zero`/`PlusZero` and the inductive-step conformance on `AddOne`/`PlusSucc` together prove the property for every natural number or every addition proof.
+Each theorem is a protocol with a plain associated type (no `where` clauses, following the `TimesNk` pattern). The base-case conformance on `Zero`/`PlusZero` and the inductive-step conformance on `AddOne`/`PlusSucc` together prove the property for every natural number or every addition proof.
 
 ### Left zero identity: `0 + n = n`
 
@@ -186,9 +186,9 @@ extension AddOne: AddLeftZero where Predecessor: AddLeftZero { ... }  // inducti
 The existing `PlusSucc` adds a successor on the right. This theorem shifts a successor on the left:
 
 ```swift
-// SuccLeftAdd: for any proof P of a + b = c, there is a proof of S(a) + b = S(c)
-extension PlusZero: SuccLeftAdd { ... }                     // base case
-extension PlusSucc: SuccLeftAdd where Proof: SuccLeftAdd { ... }  // inductive step
+// SuccessorLeftAdd: for any proof P of a + b = c, there is a proof of S(a) + b = S(c)
+extension PlusZero: SuccessorLeftAdd { ... }                     // base case
+extension PlusSucc: SuccessorLeftAdd where Proof: SuccessorLeftAdd { ... }  // inductive step
 ```
 
 ### Commutativity: `a + b = c => b + a = c`
@@ -199,7 +199,7 @@ Combines the first two theorems. The base case uses left zero identity; the indu
 // AddCommutative: for any proof P of a + b = c, there is a proof of b + a = c
 extension PlusZero: AddCommutative where N: AddLeftZero { ... }   // base case
 extension PlusSucc: AddCommutative
-    where Proof: AddCommutative, Proof.Commuted: SuccLeftAdd { ... }  // inductive step
+    where Proof: AddCommutative, Proof.Commuted: SuccessorLeftAdd { ... }  // inductive step
 ```
 
 ### Associativity: `(a + b) + c = a + (b + c)`
@@ -208,10 +208,10 @@ Associativity is a binary theorem requiring two addition proofs (one for `a + b`
 
 ```swift
 // ProofSeed<P>: a Natural wrapping a NaturalSum proof as a base case
-// AddAssociative: for any chain AddOne^c(ProofSeed<P>), the AssocProof is PlusSucc^c(P)
-typealias Assoc3p2p4 = AddOne<AddOne<AddOne<AddOne<ProofSeed<ThreePlusTwo>>>>>
-// AssocProof witnesses 3 + 6 = 9 (i.e. 3 + (2+4) = (3+2) + 4)
-assertEqual(Assoc3p2p4.AssocProof.Total.self, N9.self)
+// AddAssociative: for any chain AddOne^c(ProofSeed<P>), the AssociativeProof is PlusSucc^c(P)
+typealias Associative3Plus2Plus4 = AddOne<AddOne<AddOne<AddOne<ProofSeed<ThreePlusTwo>>>>>
+// AssociativeProof witnesses 3 + 6 = 9 (i.e. 3 + (2+4) = (3+2) + 4)
+assertEqual(Associative3Plus2Plus4.AssociativeProof.Total.self, N9.self)
 ```
 
 Universality is twofold: parametric over the seed proof (any `NaturalSum`) and inductive over the extension depth (any natural number).
@@ -230,85 +230,85 @@ For `a * b`, the proof has b groups of a ticks each. The flat encoding and `Time
 With Left = 0, each group has 0 ticks, so the inductive step is just `TimesGroup` wrapping the previous proof:
 
 ```swift
-// MulLeftZero: for any N, there is a NaturalProduct witnessing 0 * N = 0
-extension Zero: MulLeftZero { ... }                         // base case
-extension AddOne: MulLeftZero where Predecessor: MulLeftZero { ... }  // inductive step
+// MultiplicationLeftZero: for any N, there is a NaturalProduct witnessing 0 * N = 0
+extension Zero: MultiplicationLeftZero { ... }                         // base case
+extension AddOne: MultiplicationLeftZero where Predecessor: MultiplicationLeftZero { ... }  // inductive step
 ```
 
 ### Successor-left multiplication: `a * b = c => S(a) * b = c + b`
 
-Each `TimesGroup` gains one extra `TimesTick`, so b groups contribute b extra ticks. Structurally identical to how `SuccLeftAdd` wraps each `PlusSucc`:
+Each `TimesGroup` gains one extra `TimesTick`, so b groups contribute b extra ticks. Structurally identical to how `SuccessorLeftAdd` wraps each `PlusSucc`:
 
 ```swift
-// SuccLeftMul: for any flat proof P of a * b = c, there is a proof of S(a) * b = c + b
-extension TimesZero: SuccLeftMul { ... }                    // base case
-extension TimesTick: SuccLeftMul where Proof: SuccLeftMul { ... }  // tick step
-extension TimesGroup: SuccLeftMul where Proof: SuccLeftMul { ... }  // group step (inserts extra tick)
+// SuccessorLeftMultiplication: for any flat proof P of a*b = c, there is a proof of S(a)*b = c+b
+extension TimesZero: SuccessorLeftMultiplication { ... }                    // base case
+extension TimesTick: SuccessorLeftMultiplication where Proof: SuccessorLeftMultiplication { ... }  // tick step
+extension TimesGroup: SuccessorLeftMultiplication where Proof: SuccessorLeftMultiplication { ... }  // group step (inserts extra tick)
 ```
 
 ### Commutativity: `a * b = b * a` (per fixed A)
 
 Unlike addition commutativity (which transforms a single proof), multiplication commutativity must relate two structurally different proofs: `a * b` has b groups of a ticks, while `b * a` has a groups of b ticks. Swift's type system (lacking generic associated types) cannot express a universal transformation over both a and b simultaneously.
 
-The solution decomposes commutativity into per-A protocols following the `_TimesNk` pattern. For each fixed A, the `_MulCommNk` protocol proves `A * b = b * A` for all b by paired induction:
+The solution decomposes commutativity into per-A protocols following the `TimesNk` pattern. For each fixed A, the `MultiplicationCommutativityOfK` protocol proves `A * b = b * A` for all b by paired induction:
 
 ```swift
-// _MulCommN2: proves 2 * b = b * 2 for all b
-// FwdProof constructs 2 * S(b) from 2 * b (2 ticks + group)
-// RevProof constructs S(b) * 2 from b * 2 (SuccLeftMul.Distributed)
-typealias MulComm2x3 = AddOne<AddOne<AddOne<_MulCommN2Seed>>>
-assertEqual(MulComm2x3.FwdProof.Total.self, N6.self)  // 2 * 3 = 6
-assertEqual(MulComm2x3.RevProof.Total.self, N6.self)  // 3 * 2 = 6
+// MultiplicationCommutativityOfTwo: proves 2 * b = b * 2 for all b
+// ForwardProof constructs 2 * S(b) from 2 * b (2 ticks + group)
+// ReverseProof constructs S(b) * 2 from b * 2 (SuccessorLeftMultiplication.Distributed)
+typealias MultiplicationCommutativity2Times3 = AddOne<AddOne<AddOne<MultiplicationCommutativityOfTwoSeed>>>
+assertEqual(MultiplicationCommutativity2Times3.ForwardProof.Total.self, N6.self)  // 2 * 3 = 6
+assertEqual(MultiplicationCommutativity2Times3.ReverseProof.Total.self, N6.self)  // 3 * 2 = 6
 ```
 
-The reverse direction chains universally because `SuccLeftMul.Distributed` is itself required to conform to `SuccLeftMul` (a strengthened self-referential constraint). The forward direction hardcodes A ticks per group, hence the per-A protocol structure.
+The reverse direction chains universally because `SuccessorLeftMultiplication.Distributed` is itself required to conform to `SuccessorLeftMultiplication` (a strengthened self-referential constraint). The forward direction hardcodes A ticks per group, hence the per-A protocol structure.
 
 ### Macro-generated commutativity proofs
 
-The `@MulCommProof(leftOperand: A, depth: D)` macro automates bounded-depth commutativity proofs for any A >= 2. It generates paired forward/reverse proof chains inside a namespace enum:
+The `@MultiplicationCommutativityProof(leftOperand: A, depth: D)` macro automates bounded-depth commutativity proofs for any A >= 2. It generates paired forward/reverse proof chains inside a namespace enum:
 
 ```swift
-@MulCommProof(leftOperand: 4, depth: 5)
-enum MulComm4 {}
+@MultiplicationCommutativityProof(leftOperand: 4, depth: 5)
+enum MultiplicationCommutativity4 {}
 
-assertEqual(MulComm4._Fwd3.Total.self, MulComm4._Rev3.Total.self)  // 4*3 = 3*4
-assertEqual(MulComm4._Fwd3.Total.self, N12.self)                    // = 12
+assertEqual(MultiplicationCommutativity4.Forward3.Total.self, MultiplicationCommutativity4.Reverse3.Total.self)  // 4*3 = 3*4
+assertEqual(MultiplicationCommutativity4.Forward3.Total.self, N12.self)                    // = 12
 ```
 
-Each `_FwdK` witnesses `A * K` using the flat encoding (A ticks per group), and each `_RevK` witnesses `K * A` via `SuccLeftMul.Distributed`. The type checker verifies that both Totals match at every depth.
+Each `ForwardK` witnesses `A * K` using the flat encoding (A ticks per group), and each `ReverseK` witnesses `K * A` via `SuccessorLeftMultiplication.Distributed`. The type checker verifies that both Totals match at every depth.
 
 ### Distributivity: `a * (b + c) = a*b + a*c`
 
 Distributivity bridges the sum and product witness systems. The flat encoding makes it natural: `a * (b + c)` has `(b + c)` groups of `a` ticks, which is `b` groups (the `a*b` part) followed by `c` groups (the `a*c` part).
 
-`ProductSeed<Q>` wraps an existing product proof `Q` (for `a*b`), analogous to `ProofSeed<P>` for addition associativity. TimesTick/TimesGroup layers on top represent `a*c`. The `MulDistributive` protocol tracks a `NaturalSum` witness (`DistrSum`) through the product proof:
+`ProductSeed<Q>` wraps an existing product proof `Q` (for `a*b`), analogous to `ProofSeed<P>` for addition associativity. TimesTick/TimesGroup layers on top represent `a*c`. The `MultiplicationDistributive` protocol tracks a `NaturalSum` witness (`DistributiveSum`) through the product proof:
 
 ```swift
 // 2 * (1 + 1) = 2*1 + 2*1 = 2 + 2 = 4
-// Start with FlatMul2x1 (2*1 = 2), add 1 group of 2 ticks.
-typealias Distr2x1p1 = TimesGroup<TimesTick<TimesTick<ProductSeed<FlatMul2x1>>>>
+// Start with FlatProduct2Times1 (2*1 = 2), add 1 group of 2 ticks.
+typealias Distributive2Times1Plus1 = TimesGroup<TimesTick<TimesTick<ProductSeed<FlatProduct2Times1>>>>
 
-assertEqual(Distr2x1p1.Total.self, N4.self)             // 2 * 2 = 4
-assertEqual(Distr2x1p1.DistrSum.Left.self, N2.self)     // a*b = 2
-assertEqual(Distr2x1p1.DistrSum.Right.self, N2.self)    // a*c = 2
-assertEqual(Distr2x1p1.DistrSum.Total.self, N4.self)    // 2 + 2 = 4
+assertEqual(Distributive2Times1Plus1.Total.self, N4.self)             // 2 * 2 = 4
+assertEqual(Distributive2Times1Plus1.DistributiveSum.Left.self, N2.self)     // a*b = 2
+assertEqual(Distributive2Times1Plus1.DistributiveSum.Right.self, N2.self)    // a*c = 2
+assertEqual(Distributive2Times1Plus1.DistributiveSum.Total.self, N4.self)    // 2 + 2 = 4
 ```
 
-Each `TimesTick` wraps `DistrSum` in `PlusSucc` (incrementing the sum), each `TimesGroup` passes it through unchanged, and `ProductSeed<Q>` starts with `PlusZero<Q.Total>`. The result: `DistrSum` witnesses `a*b + a*c = a*(b+c)`.
+Each `TimesTick` wraps `DistributiveSum` in `PlusSucc` (incrementing the sum), each `TimesGroup` passes it through unchanged, and `ProductSeed<Q>` starts with `PlusZero<Q.Total>`. The result: `DistributiveSum` witnesses `a*b + a*c = a*(b+c)`.
 
 ### Multiplicative identity: `n * 1 = n` and `1 * n = n`
 
-`MulRightOne` proves `n * 1 = n` for all n. The base case is `TimesGroup<TimesZero<Zero>>` (one group of zero ticks); the inductive step uses `SuccLeftMul.Distributed` to add one tick to the single group. `MulLeftOne` proves `1 * n = n` by direct construction: one tick per group, n groups.
+`MultiplicationRightOne` proves `n * 1 = n` for all n. The base case is `TimesGroup<TimesZero<Zero>>` (one group of zero ticks); the inductive step uses `SuccessorLeftMultiplication.Distributed` to add one tick to the single group. `MultiplicationLeftOne` proves `1 * n = n` by direct construction: one tick per group, n groups.
 
 ### Algebraic identities via distributivity
 
-Distributivity combines with SuccLeftMul and MulRightOne to prove algebraic identities that explain *why* numerical correspondences hold, not just *that* they hold:
+Distributivity combines with SuccessorLeftMultiplication and MultiplicationRightOne to prove algebraic identities that explain *why* numerical correspondences hold, not just *that* they hold:
 
-**Difference of squares:** `n*(n+2) + 1 = (n+1)^2`. Both sides decompose via a shared base `n*(n+1)`: SuccLeftMul gives `(n+1)^2 = n*(n+1) + (n+1)`, and distributivity gives `n*(n+2) = n*(n+1) + n`. The remainders differ by exactly 1. This algebraically explains the Wallis product factor correspondence `(2k-1)(2k+1) + 1 = (2k)^2`.
+**Difference of squares:** `n*(n+2) + 1 = (n+1)^2`. Both sides decompose via a shared base `n*(n+1)`: SuccessorLeftMultiplication gives `(n+1)^2 = n*(n+1) + (n+1)`, and distributivity gives `n*(n+2) = n*(n+1) + n`. The remainders differ by exactly 1. This algebraically explains the Wallis product factor correspondence `(2k-1)(2k+1) + 1 = (2k)^2`.
 
 **Cassini identity:** `F(n-1)*F(n+1) - F(n)^2 = (-1)^n`. The key step uses distributivity: `F(n+1)*F(n-1) = (F(n) + F(n-1)) * F(n-1) = F(n)*F(n-1) + F(n-1)^2`. This is the first number-theoretic theorem in the project -- a statement about Fibonacci *structure*, not just Fibonacci *computation*.
 
-**CF convergent determinant identity:** `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}`. This structural invariant holds for all continued fractions. For the golden ratio it reduces to Cassini (since h_n = F(n+2), k_n = F(n+1)). Demonstrated for sqrt(2) at n=1,2: products are built using the universal theorems `MulLeftOne` and `SuccLeftMul.Distributed` -- the same theorems the proof macros now reference instead of generating brute-force chains.
+**CF convergent determinant identity:** `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}`. This structural invariant holds for all continued fractions. For the golden ratio it reduces to Cassini (since h_n = F(n+2), k_n = F(n+1)). Demonstrated for sqrt(2) at n=1,2: products are built using the universal theorems `MultiplicationLeftOne` and `SuccessorLeftMultiplication.Distributed` -- the same theorems the proof macros now reference instead of generating brute-force chains.
 
 **Wallis-Leibniz denominator correspondence:** `WQ[k] = LQ[k+1] * LQ[k]`. Each Wallis denominator equals the product of two consecutive Leibniz denominators. Leibniz denominators accumulate one odd factor per step (1, 3, 15, 105, ...); Wallis denominators accumulate paired odd factors. The product of consecutive Leibniz denominators telescopes into the Wallis denominator. Since the Brouncker-Leibniz correspondence gives `CF_k.P = LS_{k+1}.Q`, this also yields `WQ[k] = CF_k.P * CF_{k-1}.P` -- a three-way connection between all pi representations. Demonstrated at k=1 (3 = 3\*1) and k=2 (45 = 15\*3), with a bonus exact fraction `W_1 = 2*S_2` (4/3 = 2\*(2/3)).
 
@@ -355,10 +355,10 @@ The sqrt(2) continued fraction [1; 2, 2, 2, ...] has convergents that can be com
 
 ```swift
 @Sqrt2ConvergenceProof(depth: 3)
-enum Sqrt2Proof {}
+enum Sqrt2ConvergenceProof {}
 
-assertEqual(Sqrt2Proof._MAT3.A.self, Sqrt2Proof._CF3.P.self)  // 17 = 17
-assertEqual(Sqrt2Proof._MAT3.B.self, Sqrt2Proof._CF3.Q.self)  // 12 = 12
+assertEqual(Sqrt2ConvergenceProof.MatrixPower3.A.self, Sqrt2ConvergenceProof.Convergent3.P.self)  // 17 = 17
+assertEqual(Sqrt2ConvergenceProof.MatrixPower3.B.self, Sqrt2ConvergenceProof.Convergent3.Q.self)  // 12 = 12
 ```
 
 ## Building
