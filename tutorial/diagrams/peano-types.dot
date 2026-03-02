@@ -1,0 +1,32 @@
+// Peano type construction chain: Zero -> AddOne<Zero> -> AddOne<AddOne<Zero>> -> ...
+digraph peano_types {
+  rankdir=LR;
+  bgcolor="transparent";
+  node [
+    fontname="Source Code Pro"
+    fontsize=12
+    shape=box
+    style="rounded,filled"
+    fillcolor="#f5f5f4"
+    color="#d6d3d1"
+    penwidth=1.5
+  ];
+  edge [
+    fontname="Source Code Pro"
+    fontsize=10
+    color="#9333ea"
+    penwidth=1.5
+    arrowsize=0.8
+  ];
+
+  n0 [label="Zero\n(N0)" fillcolor="#f3e8ff"];
+  n1 [label="AddOne<Zero>\n(N1)"];
+  n2 [label="AddOne<AddOne<Zero>>\n(N2)"];
+  n3 [label="AddOne<...>\n(N3)"];
+  n4 [label="AddOne<...>\n(N4)"];
+
+  n0 -> n1 [label="AddOne"];
+  n1 -> n2 [label="AddOne"];
+  n2 -> n3 [label="AddOne"];
+  n3 -> n4 [label="AddOne"];
+}

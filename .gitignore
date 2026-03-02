@@ -2,3 +2,7 @@ xcuserdata
 .DS_Store
 .build/
 .swiftpm/
+tutorial/node_modules/
+tutorial/dist/
+tutorial/public/diagrams/*.svg
+tutorial/.index-source.html

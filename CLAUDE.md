@@ -41,6 +41,19 @@ Tests/
     Sqrt2ConvergenceProofMacroTests.swift
     MultiplicationCommutativityProofMacroTests.swift
     WallisProductProofMacroTests.swift
+tutorial/                                    -- companion webpage for main.swift
+  package.json                               -- Vite + Shiki dependencies
+  vite.config.js                             -- Vite build config
+  index.html                                 -- single-page tutorial (15 sections + epilogue)
+  src/
+    style.css                                -- typography, layout, responsive, components
+    main.js                                  -- sidebar toggle, scroll-spy
+    macro-highlight.js                       -- hover-highlight for macro panels
+  diagrams/                                  -- Graphviz DOT source files (9 diagrams)
+  scripts/
+    generate-diagrams.sh                     -- runs dot -Tsvg on all .dot files
+    highlight.js                             -- Shiki build script for syntax highlighting
+  public/diagrams/                           -- generated SVGs (gitignored)
 ```
 
 ## Building and testing
@@ -97,6 +110,7 @@ swift test                       # run macro expansion tests
 - `PhiUnfold` / `Sqrt2PeriodicUnfold` prove that periodic streams unfold to themselves at any depth, using the Seed-based induction pattern. `PhiUnfoldSeed` / `Sqrt2PeriodicUnfoldSeed` provide the base case (depth 0); `AddOne` applies `.Tail` for the inductive step.
 - `assertStreamEqual<T: CFStream>(_: T.Type, _: T.Type)` provides compile-time type equality assertions for `CFStream` types, analogous to `assertEqual` for `Integer` types.
 - Universal convergent extraction from streams hasn't been achieved yet. The CF recurrence `h_{n+1} = a*h_n + h_{n-1}` seems to require adding two abstract naturals in one step, which conditional conformance alone can't express. But the Seed/ProductSeed technique of wrapping one structure and inducting over another might offer a path. For now, convergent computation remains bounded-depth via macros. The streams encode the *identity* of the irrational number (its coefficient sequence); connecting identity to computation is an open problem.
+- The companion tutorial webpage (`tutorial/index.html`) recapitulates main.swift. When main.swift sections change (added, removed, renumbered, or substantively rewritten), update the tutorial webpage to match: section content, code blocks, diagrams, and sidebar navigation. When renumbering or reordering sections, regenerate the entire sidebar navigation and verify all internal cross-references (anchor links, section number mentions in prose, diagram placements).
 
 ## Proof techniques
 

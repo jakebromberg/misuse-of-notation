@@ -1,0 +1,17 @@
+{
+  "name": "abuse-of-notation-tutorial",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "cp index.html .index-source.html && node scripts/highlight.js && vite build; cp .index-source.html index.html",
+    "preview": "vite preview",
+    "highlight": "node scripts/highlight.js",
+    "diagrams": "bash scripts/generate-diagrams.sh"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "shiki": "^1.0.0"
+  }
+}

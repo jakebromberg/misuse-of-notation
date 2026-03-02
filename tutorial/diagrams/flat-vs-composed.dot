@@ -1,0 +1,62 @@
+// Flat encoding (TimesTick/TimesGroup) vs composed (TimesSucc)
+digraph flat_vs_composed {
+  bgcolor="transparent";
+  rankdir=TB;
+  node [
+    fontname="Source Code Pro"
+    fontsize=11
+    shape=box
+    style="rounded,filled"
+    fillcolor="#f5f5f4"
+    color="#d6d3d1"
+    penwidth=1.5
+  ];
+  edge [
+    fontname="Source Code Pro"
+    fontsize=10
+    penwidth=1.5
+    arrowsize=0.8
+  ];
+
+  subgraph cluster_composed {
+    label="Composed (TimesSucc)";
+    labeljust=l;
+    fontname="Inter";
+    fontsize=11;
+    style="rounded,dashed";
+    color="#fca5a5";
+    bgcolor="#fef2f2";
+
+    ts_note [
+      label="where Proof: NaturalProduct,\n      Sum: NaturalSum,\n      Sum.Left == Proof.Left.Total,\n      Sum.Right == Proof.Left,\n      ..."
+      shape=note
+      fillcolor="#fef2f2"
+      color="#fca5a5"
+      fontsize=9
+    ];
+    ts [label="TimesSucc<Proof, Sum>" fillcolor="#fee2e2" color="#fca5a5"];
+    ts_note -> ts [style=invis];
+  }
+
+  subgraph cluster_flat {
+    label="Flat (TimesTick / TimesGroup)";
+    labeljust=l;
+    fontname="Inter";
+    fontsize=11;
+    style="rounded,dashed";
+    color="#86efac";
+    bgcolor="#f0fdf4";
+
+    tt [label="TimesTick<P>\nTotal = S(P.Total)\nNo where clauses" fillcolor="#dcfce7" color="#86efac"];
+    tg [label="TimesGroup<P>\nRight = S(P.Right)\nNo where clauses" fillcolor="#dcfce7" color="#86efac"];
+    tz [label="TimesZero<N>\nBase case" fillcolor="#dcfce7" color="#86efac"];
+
+    tz -> tt [label="tick" color="#16a34a"];
+    tt -> tt [label="tick" color="#16a34a"];
+    tt -> tg [label="group\nboundary" color="#16a34a"];
+    tg -> tt [label="tick" color="#16a34a"];
+  }
+
+  ts -> ts [label="rewrite system\nexplosion" color="#dc2626" style=dashed fontcolor="#dc2626"];
+  tg -> tg [label="composes\nuniversally" color="#16a34a" style=dashed fontcolor="#16a34a" constraint=false];
+}
