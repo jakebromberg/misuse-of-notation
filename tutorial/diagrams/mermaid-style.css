@@ -1,24 +1,75 @@
-/* Match the neo-style reference diagram: drop shadows, clean strokes */
-
-.node rect,
-.node circle,
-.node ellipse,
-.node polygon {
-  filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.06));
-  rx: 4;
-  ry: 4;
-}
-
-.cluster rect {
-  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.06));
-  rx: 4;
-  ry: 4;
-}
-
-.edgePath .path {
-  stroke-width: 1.5px;
-}
+/* Scraped from reference diagram SVG and adapted.
+   Replaces Recursive Variable with Inter. */
 
 .label {
   font-family: 'Inter', 'Helvetica Neue', arial, sans-serif;
+}
+
+.label text, span {
+  fill: #28253D;
+}
+
+.node rect, .node circle, .node ellipse, .node polygon, .node path {
+  fill: #ffffff;
+  stroke: #28253D;
+  stroke-width: 1px;
+}
+
+.arrowheadPath {
+  fill: #000000;
+}
+
+.edgePath .path {
+  stroke: #000000;
+  stroke-width: 2px;
+}
+
+.flowchart-link {
+  stroke: #000000;
+  fill: none;
+}
+
+.edgeLabel {
+  background-color: hsl(0, 0%, 80%);
+}
+
+.edgeLabel p {
+  background-color: hsl(0, 0%, 80%);
+}
+
+.edgeLabel rect {
+  opacity: 0.5;
+  background-color: hsl(0, 0%, 80%);
+  fill: hsl(0, 0%, 80%);
+}
+
+.cluster rect {
+  fill: #F9F9FB;
+  stroke: #BDBCCC;
+  stroke-width: 1px;
+}
+
+.cluster-label text {
+  fill: #000000;
+}
+
+.cluster-label span {
+  color: #000000;
+}
+
+.marker {
+  fill: #000000;
+  stroke: #000000;
+}
+
+.edge-thickness-normal {
+  stroke-width: 2px;
+}
+
+.edge-pattern-dashed {
+  stroke-dasharray: 3;
+}
+
+.edge-pattern-dotted {
+  stroke-dasharray: 2;
 }
