@@ -1,0 +1,35 @@
+// Protocol hierarchy: Integer -> Natural, Nonpositive; Zero at intersection
+digraph protocol_hierarchy {
+  bgcolor="transparent";
+  node [
+    fontname="Source Code Pro"
+    fontsize=12
+    shape=box
+    style="rounded,filled"
+    fillcolor="#f5f5f4"
+    color="#d6d3d1"
+    penwidth=1.5
+  ];
+  edge [
+    fontname="Source Code Pro"
+    fontsize=10
+    color="#57534e"
+    penwidth=1.5
+    arrowsize=0.8
+    arrowhead=empty
+  ];
+
+  integer [label="Integer" fillcolor="#e7e5e4" shape=ellipse];
+  natural [label="Natural" fillcolor="#dcfce7" shape=ellipse];
+  nonpositive [label="Nonpositive" fillcolor="#fef3c7" shape=ellipse];
+  zero [label="Zero" fillcolor="#f3e8ff"];
+  addone [label="AddOne<N>" fillcolor="#f5f5f4"];
+  subone [label="SubOne<N>" fillcolor="#f5f5f4"];
+
+  natural -> integer;
+  nonpositive -> integer;
+  zero -> natural;
+  zero -> nonpositive;
+  addone -> natural [label="where N: Natural"];
+  subone -> nonpositive [label="where N: Nonpositive"];
+}

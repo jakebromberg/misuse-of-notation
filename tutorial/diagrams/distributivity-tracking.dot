@@ -1,0 +1,98 @@
+// DistrSum tracked through product proof for 3 * (2 + 1) = 3*2 + 3*1
+digraph distributivity_tracking {
+  bgcolor="transparent";
+  rankdir=TB;
+  node [
+    fontname="Source Code Pro"
+    fontsize=10
+    shape=box
+    style="rounded,filled"
+    penwidth=1.5
+  ];
+  edge [
+    fontname="Source Code Pro"
+    fontsize=9
+    penwidth=1.5
+    arrowsize=0.8
+  ];
+
+  // Product proof layer (blue)
+  subgraph cluster_product {
+    label="Product proof (a*(b+c))";
+    labeljust=l;
+    fontname="Inter";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#60a5fa";
+    bgcolor="#eff6ff";
+
+    pseed [
+      label="ProductSeed<3*2>\nL=3 R=2 T=6"
+      fillcolor="#dbeafe"
+      color="#60a5fa"
+    ];
+    tick1 [
+      label="TimesTick\nL=3 R=2 T=7"
+      fillcolor="#dbeafe"
+      color="#60a5fa"
+    ];
+    tick2 [
+      label="TimesTick\nL=3 R=2 T=8"
+      fillcolor="#dbeafe"
+      color="#60a5fa"
+    ];
+    tick3 [
+      label="TimesTick\nL=3 R=2 T=9"
+      fillcolor="#dbeafe"
+      color="#60a5fa"
+    ];
+    group [
+      label="TimesGroup\nL=3 R=3 T=9"
+      fillcolor="#dbeafe"
+      color="#60a5fa"
+    ];
+
+    pseed -> tick1 -> tick2 -> tick3 -> group [color="#2563eb"];
+  }
+
+  // DistrSum layer (orange)
+  subgraph cluster_sum {
+    label="DistrSum witness (a*b + a*c)";
+    labeljust=l;
+    fontname="Inter";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#f97316";
+    bgcolor="#fff7ed";
+
+    ds0 [
+      label="PlusZero<6>\n6 + 0 = 6"
+      fillcolor="#fed7aa"
+      color="#f97316"
+    ];
+    ds1 [
+      label="PlusSucc\n6 + 1 = 7"
+      fillcolor="#fed7aa"
+      color="#f97316"
+    ];
+    ds2 [
+      label="PlusSucc\n6 + 2 = 8"
+      fillcolor="#fed7aa"
+      color="#f97316"
+    ];
+    ds3 [
+      label="PlusSucc\n6 + 3 = 9"
+      fillcolor="#fed7aa"
+      color="#f97316"
+    ];
+
+    ds0 -> ds1 -> ds2 -> ds3 [color="#ea580c"];
+  }
+
+  // Connections between layers (product -> sum tracking)
+  pseed -> ds0 [style=dotted color="#57534e" label="starts at\nPlusZero"];
+  tick1 -> ds1 [style=dotted color="#57534e" label="PlusSucc"];
+  tick2 -> ds2 [style=dotted color="#57534e"];
+  tick3 -> ds3 [style=dotted color="#57534e"];
+  group -> ds3 [style=dotted color="#57534e" label="pass\nthrough" constraint=false];
+}

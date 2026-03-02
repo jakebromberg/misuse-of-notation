@@ -1,0 +1,55 @@
+// Three-way connection: Brouncker CF <-> Leibniz series <-> Wallis product
+digraph three_way_pi {
+  bgcolor="transparent";
+  node [
+    fontname="Inter"
+    fontsize=12
+    shape=box
+    style="rounded,filled"
+    fillcolor="#f5f5f4"
+    color="#d6d3d1"
+    penwidth=1.5
+  ];
+  edge [
+    fontname="Inter"
+    fontsize=10
+    penwidth=2
+    arrowsize=0.8
+    dir=both
+    arrowhead=normal
+    arrowtail=normal
+  ];
+
+  brouncker [
+    label="Brouncker CF\n4/pi = 1 + 1\u00b2/(2 + 3\u00b2/(2 + ...))\nConvergents: h_k/k_k"
+    fillcolor="#f3e8ff"
+    color="#9333ea"
+  ];
+  leibniz [
+    label="Leibniz Series\npi/4 = 1 - 1/3 + 1/5 - ...\nPartial sums: S_k"
+    fillcolor="#dbeafe"
+    color="#3b82f6"
+  ];
+  wallis [
+    label="Wallis Product\npi/2 = \u220F (2k)\u00b2/((2k-1)(2k+1))\nPartial products: W_k"
+    fillcolor="#dcfce7"
+    color="#16a34a"
+  ];
+
+  brouncker -> leibniz [
+    label="CF_k.P = LS_{k+1}.Q\n(Brouncker-Leibniz)"
+    color="#7c3aed"
+    fontcolor="#7c3aed"
+  ];
+  leibniz -> wallis [
+    label="WQ[k] = LQ[k+1] * LQ[k]\n(Wallis-Leibniz)"
+    color="#059669"
+    fontcolor="#059669"
+  ];
+  brouncker -> wallis [
+    label="WQ[k] = CF_k.P * CF_{k-1}.P\n(derived)"
+    color="#57534e"
+    fontcolor="#57534e"
+    style=dashed
+  ];
+}
