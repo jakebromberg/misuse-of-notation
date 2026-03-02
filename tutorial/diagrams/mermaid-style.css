@@ -1,0 +1,24 @@
+/* Match the neo-style reference diagram: drop shadows, clean strokes */
+
+.node rect,
+.node circle,
+.node ellipse,
+.node polygon {
+  filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.06));
+  rx: 4;
+  ry: 4;
+}
+
+.cluster rect {
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.06));
+  rx: 4;
+  ry: 4;
+}
+
+.edgePath .path {
+  stroke-width: 1.5px;
+}
+
+.label {
+  font-family: 'Inter', 'Helvetica Neue', arial, sans-serif;
+}

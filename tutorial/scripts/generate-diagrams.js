@@ -3,13 +3,17 @@
 // Generate SVG diagrams from Mermaid .mmd files using @mermaid-js/mermaid-cli.
 
 import { run } from '@mermaid-js/mermaid-cli';
-import { readdirSync, mkdirSync } from 'fs';
+import { readdirSync, readFileSync, mkdirSync } from 'fs';
 import { resolve, dirname, basename, extname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const diagramsDir = resolve(__dirname, '..', 'diagrams');
 const outputDir = resolve(__dirname, '..', 'public', 'diagrams');
+const configPath = resolve(diagramsDir, 'mermaid-config.json');
+const cssPath = resolve(diagramsDir, 'mermaid-style.css');
+const mermaidConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
+const myCSS = readFileSync(cssPath, 'utf-8');
 
 mkdirSync(outputDir, { recursive: true });
 
@@ -20,7 +24,10 @@ for (const file of files) {
   const input = resolve(diagramsDir, file);
   const output = resolve(outputDir, `${name}.svg`);
   console.log(`Generating ${name}.svg...`);
-  await run(input, output, { puppeteerConfig: { headless: true } });
+  await run(input, output, {
+    parseMMDOptions: { mermaidConfig, myCSS },
+    puppeteerConfig: { headless: true },
+  });
 }
 
 console.log(`Generated ${files.length} diagram(s) in ${outputDir}`);
