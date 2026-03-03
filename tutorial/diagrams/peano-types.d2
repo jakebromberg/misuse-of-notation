@@ -1,0 +1,14 @@
+direction: right
+
+N0: "Zero\n(N0)" {
+  style.fill: "#cce5ff"
+}
+N1: "AddOne‹Zero›\n(N1)"
+N2: "AddOne‹AddOne‹Zero››\n(N2)"
+N3: "AddOne‹...›\n(N3)"
+N4: "AddOne‹...›\n(N4)"
+
+N0 -> N1: AddOne
+N1 -> N2: AddOne
+N2 -> N3: AddOne
+N3 -> N4: AddOne

@@ -10,7 +10,6 @@
     "diagrams": "node scripts/generate-diagrams.js"
   },
   "devDependencies": {
-    "@mermaid-js/mermaid-cli": "^11.12.0",
     "shiki": "^1.0.0",
     "vite": "^6.0.0"
   }

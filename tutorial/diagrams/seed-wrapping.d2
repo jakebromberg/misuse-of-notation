@@ -1,0 +1,60 @@
+direction: right
+
+Proof: "P: NaturalSum\n(a + b = d)" {
+  style.fill: "#cce5ff"
+}
+Seed: "ProofSeed‹P›\nwraps P" {
+  style.fill: "#fff3cd"
+}
+A1: "AddOne‹...›\nc = 1" {
+  style.fill: "#d4edda"
+}
+A2: "AddOne‹...›\nc = 2" {
+  style.fill: "#d4edda"
+}
+A3: "AddOne‹...›\nc = 3" {
+  style.fill: "#d4edda"
+}
+
+Proof -> Seed: wrap
+Seed -> A1: AddOne
+A1 -> A2: AddOne
+A2 -> A3: AddOne
+
+R0: "AssocProof = P" {
+  style.fill: transparent
+  style.stroke: transparent
+  style.font-color: "#7c3aed"
+}
+R1: "= PlusSucc‹P›" {
+  style.fill: transparent
+  style.stroke: transparent
+  style.font-color: "#7c3aed"
+}
+R2: "= PlusSucc²‹P›" {
+  style.fill: transparent
+  style.stroke: transparent
+  style.font-color: "#7c3aed"
+}
+R3: "= PlusSucc³‹P›" {
+  style.fill: transparent
+  style.stroke: transparent
+  style.font-color: "#7c3aed"
+}
+
+Seed -> R0 {
+  style.stroke-dash: 3
+  style.stroke: "#7c3aed"
+}
+A1 -> R1 {
+  style.stroke-dash: 3
+  style.stroke: "#7c3aed"
+}
+A2 -> R2 {
+  style.stroke-dash: 3
+  style.stroke: "#7c3aed"
+}
+A3 -> R3 {
+  style.stroke-dash: 3
+  style.stroke: "#7c3aed"
+}
