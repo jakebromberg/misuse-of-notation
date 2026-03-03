@@ -1,0 +1,17 @@
+Phi: "Golden Ratio: [1; 1, 1, 1, ...]" {
+  PhiCF: "PhiCF\nHead = N1" {
+    style.fill: "#cce5ff"
+  }
+  PhiCF -> PhiCF: "Tail = Self"
+}
+
+Sqrt2: "sqrt(2) = [1; 2, 2, 2, ...]" {
+  Sqrt2CF: "Sqrt2CF\nHead = N1" {
+    style.fill: "#d4edda"
+  }
+  Periodic: "Sqrt2Periodic\nHead = N2" {
+    style.fill: "#d4edda"
+  }
+  Sqrt2CF -> Periodic: Tail
+  Periodic -> Periodic: "Tail = Self"
+}

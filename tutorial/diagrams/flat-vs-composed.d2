@@ -1,0 +1,30 @@
+Composed: "Composed (TimesSucc)" {
+  TS: "TimesSucc‹Proof, Sum›" {
+    style.fill: "#f8d7da"
+  }
+  Note: "where Proof: NaturalProduct,\nSum: NaturalSum, ..." {
+    style.fill: "#f8d7da"
+    style.stroke: "#BDBCCC"
+  }
+  Warn: "rewrite system explosion" {
+    style.fill: "#f8d7da"
+    style.font-color: "#dc2626"
+  }
+}
+
+Flat: "Flat (TimesTick / TimesGroup)" {
+  TZ: "TimesZero‹N›\nBase case" {
+    style.fill: "#d4edda"
+  }
+  TT: "TimesTick‹P›\nTotal = S(P.Total)\nNo where clauses" {
+    style.fill: "#d4edda"
+  }
+  TG: "TimesGroup‹P›\nRight = S(P.Right)\nNo where clauses" {
+    style.fill: "#d4edda"
+  }
+
+  TZ -> TT: tick
+  TT -> TT: tick
+  TT -> TG: group boundary
+  TG -> TT: tick
+}

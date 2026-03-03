@@ -1,0 +1,23 @@
+Protocols: Protocol Definitions {
+  P: "NaturalSum\nNaturalProduct\nNaturalLessThan" {
+    style.fill: "#d4edda"
+  }
+}
+
+Macros: Macro Expansion (Proof Search) {
+  M: "@PiConvergenceProof\n@FibonacciProof\n@GoldenRatioProof\n..." {
+    style.fill: "#cce5ff"
+  }
+}
+
+Checker: Type Checker (Proof Verifier) {
+  C: "Structural constraint\nverification" {
+    style.fill: "#fff3cd"
+  }
+}
+
+Protocols.P -> Macros.M: defines witness types
+Macros.M -> Checker.C: emits witness chains
+Checker.C -> Protocols.P: verifies conformance {
+  style.stroke-dash: 5
+}

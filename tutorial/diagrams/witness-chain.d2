@@ -1,0 +1,14 @@
+direction: right
+
+S0: "PlusZero‹N2›\nL=2 R=0 T=2" {
+  style.fill: "#cce5ff"
+}
+S1: "PlusSucc\nL=2 R=1 T=3"
+S2: "PlusSucc\nL=2 R=2 T=4"
+S3: "PlusSucc\nL=2 R=3 T=5" {
+  style.fill: "#d4edda"
+}
+
+S0 -> S1: wrap
+S1 -> S2: wrap
+S2 -> S3: wrap

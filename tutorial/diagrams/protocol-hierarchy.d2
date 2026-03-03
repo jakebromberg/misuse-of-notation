@@ -1,0 +1,30 @@
+direction: up
+
+Integer: Integer {
+  shape: oval
+  style.fill: "#e2e3e5"
+}
+Natural: Natural {
+  shape: oval
+  style.fill: "#d4edda"
+}
+Nonpositive: Nonpositive {
+  shape: oval
+  style.fill: "#fff3cd"
+}
+AddOne: "AddOne‹N›"
+Zero: Zero {
+  style.fill: "#cce5ff"
+}
+SubOne: "SubOne‹N›"
+
+Natural -> Integer: conforms
+Nonpositive -> Integer: conforms
+AddOne -> Natural: "where N: Natural" {
+  style.stroke-dash: 5
+}
+Zero -> Natural: conforms
+Zero -> Nonpositive: conforms
+SubOne -> Nonpositive: "where N: Nonpositive" {
+  style.stroke-dash: 5
+}

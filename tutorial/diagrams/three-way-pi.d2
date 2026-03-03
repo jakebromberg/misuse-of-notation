@@ -1,0 +1,15 @@
+B: "Brouncker CF\n4/pi = 1 + 1²/(2 + 3²/(2 + ...))\nConvergents: h_k / k_k" {
+  style.fill: "#cce5ff"
+}
+L: "Leibniz Series\npi/4 = 1 - 1/3 + 1/5 - ...\nPartial sums: S_k" {
+  style.fill: "#e1f5ff"
+}
+W: "Wallis Product\npi/2 = prod (2k)² / ((2k-1)(2k+1))\nPartial products: W_k" {
+  style.fill: "#d4edda"
+}
+
+B <-> L: "CF_k.P = LS_{k+1}.Q\n(Brouncker-Leibniz)"
+L <-> W: "WQ[k] = LQ[k+1] * LQ[k]\n(Wallis-Leibniz)"
+B <-> W: "WQ[k] = CF_k.P * CF_{k-1}.P\n(derived)" {
+  style.stroke-dash: 5
+}
