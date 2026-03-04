@@ -29,6 +29,8 @@
   --accent-light: #f3e8ff;
   --link: #7c3aed;
   --link-hover: #6d28d9;
+  --bg-macro: #eff1f5;
+  --text-macro-label: #6c6f85;
 
   --sidebar-width: 260px;
   --content-max-width: 48rem;
@@ -324,15 +326,15 @@ pre code {
 /* -- Diagrams -- */
 .diagram-container {
   text-align: center;
-  margin: 2rem 0;
+  margin: 2rem 1.5rem;
   padding: 1.5rem;
-  background: white;
+  background: var(--bg);
   border: 1px solid var(--border-light);
   border-radius: 8px;
+  overflow-x: auto;
 }
 
 .diagram-container img {
-  max-width: 100%;
   height: auto;
 }
 
@@ -398,7 +400,7 @@ details .details-content pre {
 /* -- Macro side-by-side panels -- */
 .macro-panel {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0;
   margin: 2rem 0;
   border: 1px solid var(--border-light);
@@ -410,6 +412,11 @@ details .details-content pre {
 .macro-panel .macro-input,
 .macro-panel .macro-output {
   overflow-x: auto;
+  background: var(--bg-macro);
+}
+
+.macro-panel .macro-input {
+  border-right: 1px solid var(--border-light);
 }
 
 .macro-panel .macro-input pre,
@@ -419,21 +426,22 @@ details .details-content pre {
   font-size: var(--text-sm);
 }
 
-.macro-panel .macro-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  background: var(--bg-code);
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  writing-mode: horizontal-tb;
+.macro-panel .shiki {
+  background: transparent !important;
 }
 
-.macro-panel .macro-arrow span {
-  color: #a6adc8;
-  font-size: var(--text-xs);
-  white-space: nowrap;
+.macro-panel .shiki,
+.macro-panel .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .macro-panel .shiki,
+  .macro-panel .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
 }
 
 .macro-panel .macro-label {
@@ -441,9 +449,9 @@ details .details-content pre {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #a6adc8;
+  color: var(--text-macro-label);
   padding: 0.5rem 1rem 0;
-  background: var(--bg-code);
+  background: var(--bg-macro);
 }
 
 /* Hover highlight groups */
@@ -478,6 +486,45 @@ details .details-content pre {
   color: var(--text-secondary);
 }
 
+/* -- Dark mode -- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1917;
+    --bg-sidebar: #292524;
+    --bg-code: #1e1e2e;
+    --bg-details: #292524;
+    --text: #fafaf9;
+    --text-secondary: #a8a29e;
+    --text-sidebar: #d6d3d1;
+    --text-sidebar-active: #fafaf9;
+    --text-code: #cdd6f4;
+    --border: #44403c;
+    --border-light: #3a3633;
+    --accent: #a855f7;
+    --accent-light: rgba(168, 85, 247, 0.15);
+    --link: #a78bfa;
+    --link-hover: #c4b5fd;
+    --bg-macro: #1e1e2e;
+    --text-macro-label: #a6adc8;
+  }
+
+  .prose code {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .diagram-container {
+    background: var(--bg-details);
+  }
+
+  .sidebar-nav a:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  a[target="_blank"]::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E");
+  }
+}
+
 /* -- Responsive -- */
 @media (max-width: 768px) {
   .hamburger {
@@ -509,9 +556,9 @@ details .details-content pre {
     grid-template-columns: 1fr;
   }
 
-  .macro-panel .macro-arrow {
-    writing-mode: horizontal-tb;
-    padding: 0.25rem;
+  .macro-panel .macro-input {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
   }
 
   pre {

@@ -1,27 +1,12 @@
-direction: down
+direction: right
 
-N0: |md
-  **Zero**
-  (N0)
-| {
+N0: "Zero (N0)" {
   style.fill: "#cce5ff"
 }
-N1: |md
-  **AddOne\<Zero\>**
-  (N1)
-|
-N2: |md
-  **AddOne\<AddOne\<Zero\>\>**
-  (N2)
-|
-N3: |md
-  **AddOne\<...\>**
-  (N3)
-|
-N4: |md
-  **AddOne\<...\>**
-  (N4)
-|
+N1: "AddOne\<Zero\> (N1)"
+N2: "AddOne\<AddOne\<Zero\>\> (N2)"
+N3: "AddOne\<...\> (N3)"
+N4: "AddOne\<...\> (N4)"
 
 N0 -> N1: AddOne
 N1 -> N2: AddOne
