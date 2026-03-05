@@ -68,10 +68,11 @@ function stripBackground(filePath) {
   writeFileSync(filePath, svg);
 }
 
-// Set width/height in em units anchored to d2's font size (16px).
-// This ensures diagram text renders at 1em regardless of container width,
-// keeping diagram labels proportional to the page's body text.
-const D2_FONT_SIZE = 16;
+// Set explicit width/height at 2/3 of the viewBox dimensions.
+// The viewBox is preserved so the SVG scales cleanly. All diagrams
+// render at the same 2/3 scale factor, giving consistent font sizes.
+// The container's overflow-x: auto handles diagrams wider than the viewport.
+const SCALE = 2 / 3;
 
 function setIntrinsicSize(filePath) {
   let svg = readFileSync(filePath, 'utf-8');
@@ -79,11 +80,11 @@ function setIntrinsicSize(filePath) {
   if (match) {
     const [fullMatch, before, w, h] = match;
     if (!before.includes('width=')) {
-      const emW = (parseInt(w) / D2_FONT_SIZE).toFixed(2);
-      const emH = (parseInt(h) / D2_FONT_SIZE).toFixed(2);
+      const scaledW = Math.round(parseInt(w) * SCALE);
+      const scaledH = Math.round(parseInt(h) * SCALE);
       svg = svg.replace(
         fullMatch,
-        `${before}width="${emW}em" height="${emH}em" viewBox="0 0 ${w} ${h}"`
+        `${before}width="${scaledW}" height="${scaledH}" viewBox="0 0 ${w} ${h}"`
       );
       writeFileSync(filePath, svg);
     }
