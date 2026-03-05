@@ -76,10 +76,6 @@ body {
   flex-direction: column;
 }
 
-.sidebar .hero {
-  padding-bottom: 0.75rem;
-}
-
 .sidebar-title {
   font-size: var(--text-sm);
   font-weight: 700;
@@ -199,15 +195,15 @@ body {
   font-size: var(--text-3xl);
   font-weight: 800;
   letter-spacing: -0.02em;
-  margin-bottom: 1.25rem;
+  margin-bottom: -0.9rem;
 }
 
 .tutorial-header h2 {
   font-family: var(--font-mono);
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   font-weight: 400;
   color: var(--text-secondary);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .tutorial-header .subtitle {
@@ -363,6 +359,8 @@ pre code {
 }
 
 .diagram-container img {
+  max-width: 100%;
+  width: auto;
   height: auto;
 }
 
