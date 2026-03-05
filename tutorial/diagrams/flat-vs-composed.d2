@@ -1,4 +1,7 @@
+direction: right
+
 Composed: "Composed (TimesSucc)" {
+  direction: right
   TS: "TimesSucc\<Proof, Sum\>" {
     style.fill: "#f8d7da"
   }
@@ -10,9 +13,11 @@ Composed: "Composed (TimesSucc)" {
     style.fill: "#f8d7da"
     style.font-color: "#dc2626"
   }
+  TS -> Note -> Warn
 }
 
 Flat: "Flat (TimesTick / TimesGroup)" {
+  direction: right
   TZ: "TimesZero\<N\>\nBase case" {
     style.fill: "#d4edda"
   }

@@ -68,6 +68,26 @@ function stripBackground(filePath) {
   writeFileSync(filePath, svg);
 }
 
+// Set explicit width/height on the outer <svg> to prevent auto-scaling.
+// This makes all diagrams render at their intrinsic pixel size (consistent
+// font and node sizes across diagrams). The CSS max-width: 100% on the
+// <img> will shrink diagrams that are wider than the container.
+function setIntrinsicSize(filePath) {
+  let svg = readFileSync(filePath, 'utf-8');
+  // Match the first <svg tag's viewBox (the outer wrapper)
+  const match = svg.match(/(<svg\b[^>]*?)viewBox="0 0 (\d+) (\d+)"/);
+  if (match) {
+    const [fullMatch, before, w, h] = match;
+    if (!before.includes('width=')) {
+      svg = svg.replace(
+        fullMatch,
+        `${before}width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"`
+      );
+      writeFileSync(filePath, svg);
+    }
+  }
+}
+
 function swapFillsForDark(filePath) {
   let svg = readFileSync(filePath, 'utf-8');
   for (const [light, dark] of Object.entries(darkFillMap)) {
@@ -87,6 +107,7 @@ for (const file of files) {
     stdio: 'inherit',
   });
   stripBackground(lightOutput);
+  setIntrinsicSize(lightOutput);
 
   // Dark theme
   const darkOutput = resolve(outputDir, `${name}-dark.svg`);
@@ -95,6 +116,7 @@ for (const file of files) {
     stdio: 'inherit',
   });
   stripBackground(darkOutput);
+  setIntrinsicSize(darkOutput);
   swapFillsForDark(darkOutput);
 }
 

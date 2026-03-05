@@ -1,32 +1,32 @@
-Product: "Product proof: a * (b + c)" {
-  PS: "ProductSeed\<3*2\>\nL=3 R=2 T=6" { style.fill: "#cce5ff" }
-  T1: "TimesTick\nL=3 R=2 T=7" { style.fill: "#cce5ff" }
-  T2: "TimesTick\nL=3 R=2 T=8" { style.fill: "#cce5ff" }
-  T3: "TimesTick\nL=3 R=2 T=9" { style.fill: "#cce5ff" }
-  G: "TimesGroup\nL=3 R=3 T=9" { style.fill: "#cce5ff" }
-  PS -> T1 -> T2 -> T3 -> G
-}
+direction: right
 
-Sum: "DistrSum witness: a*b + a*c" {
-  D0: "PlusZero\<6\>\n6 + 0 = 6" { style.fill: "#fff3cd" }
-  D1: "PlusSucc\n6 + 1 = 7" { style.fill: "#fff3cd" }
-  D2: "PlusSucc\n6 + 2 = 8" { style.fill: "#fff3cd" }
-  D3: "PlusSucc\n6 + 3 = 9" { style.fill: "#fff3cd" }
-  D0 -> D1 -> D2 -> D3
-}
+PS: "ProductSeed\<3*2\>\nT=6" { style.fill: "#cce5ff" }
+T1: "TimesTick\nT=7" { style.fill: "#cce5ff" }
+T2: "TimesTick\nT=8" { style.fill: "#cce5ff" }
+T3: "TimesTick\nT=9" { style.fill: "#cce5ff" }
+G: "TimesGroup\nT=9" { style.fill: "#cce5ff" }
 
-Product.PS -> Sum.D0: "starts at PlusZero" {
+PS -> T1 -> T2 -> T3 -> G
+
+D0: "PlusZero\<6\>\n6+0=6" { style.fill: "#fff3cd" }
+D1: "PlusSucc\n6+1=7" { style.fill: "#fff3cd" }
+D2: "PlusSucc\n6+2=8" { style.fill: "#fff3cd" }
+D3: "PlusSucc\n6+3=9" { style.fill: "#fff3cd" }
+
+D0 -> D1 -> D2 -> D3
+
+PS -> D0: seed {
   style.stroke-dash: 5
 }
-Product.T1 -> Sum.D1: PlusSucc {
+T1 -> D1: tick {
   style.stroke-dash: 5
 }
-Product.T2 -> Sum.D2: PlusSucc {
+T2 -> D2: tick {
   style.stroke-dash: 5
 }
-Product.T3 -> Sum.D3: PlusSucc {
+T3 -> D3: tick {
   style.stroke-dash: 5
 }
-Product.G -> Sum.D3: "pass through" {
+G -> D3: pass {
   style.stroke-dash: 5
 }
