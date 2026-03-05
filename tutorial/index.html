@@ -45,6 +45,7 @@
     <li><a href="#section-13">13. Number-theoretic identities</a></li>
     <li><a href="#section-14">14. Convergent determinant</a></li>
     <li><a href="#section-15">15. Three pi correspondences</a></li>
+    <li><a href="#section-16">16. Unified determinant identity</a></li>
     <li style="margin-top: 1rem;"><a href="#epilogue">Epilogue</a></li>
   </ul>
 </nav>
@@ -694,13 +695,75 @@ assertEqual(WallisLeibniz3Times1.Right.self,
 </section>
 
 <!-- ================================================================ -->
+<!-- 16. Unified determinant identity                                  -->
+<!-- ================================================================ -->
+<section class="tutorial-section" id="section-16">
+  <h2>16. Unified determinant identity</h2>
+  <div class="prose">
+    <p><a href="#section-13">Section 13</a> proved the <a href="https://en.wikipedia.org/wiki/Cassini_and_Catalan_identities" target="_blank" rel="noopener">Cassini identity</a> for the golden ratio CF by hand. <a href="#section-14">Section 14</a> proved the convergent determinant for &radic;2 by hand. Both follow the same pattern: at each step n, <span class="math">h<sub>n</sub>k<sub>n-1</sub> - h<sub>n-1</sub>k<sub>n</sub> = (-1)<sup>n+1</sup></span>. They were always the same theorem &mdash; applied to different coefficients.</p>
+    <p>The <code>@CFDeterminantProof</code> macro makes the unification explicit. Given any simple continued fraction's partial quotients, it computes convergents internally, generates shared <code>SuccessorLeftMultiplication</code> chains grouped by right operand, and emits determinant sum witnesses at each step. The same macro, applied to different coefficients, recovers both identities.</p>
+  </div>
+  <pre><code class="language-swift">// Golden ratio: [1; 1, 1, 1, 1] -- Cassini's identity
+@CFDeterminantProof(coefficients: [1, 1, 1, 1, 1])
+enum GoldenRatioDeterminant {}
+
+// Cross-check: macro convergents match the golden ratio proof's
+assertEqual(GoldenRatioDeterminant.HTimesPrevK3.Left.self,
+            GoldenRatioProof.Convergent3.P.self)          // h_3 = 5
+assertEqual(GoldenRatioDeterminant.PrevHTimesK3.Left.self,
+            GoldenRatioProof.Convergent2.P.self)          // h_2 = 3
+
+// sqrt(2): [1; 2, 2, 2] -- same identity, different constant
+@CFDeterminantProof(coefficients: [1, 2, 2, 2])
+enum Sqrt2Determinant2 {}
+
+// Cross-check: convergents match the sqrt(2) convergence proof's
+assertEqual(Sqrt2Determinant2.HTimesPrevK2.Left.self,
+            Sqrt2ConvergenceProof.Convergent2.P.self)     // h_2 = 7
+assertEqual(Sqrt2Determinant2.PrevHTimesK2.Left.self,
+            Sqrt2ConvergenceProof.Convergent1.P.self)     // h_1 = 3</code></pre>
+
+  <h3>Macro expansion (coefficients: [1, 1])</h3>
+  <div class="macro-panel">
+    <div class="macro-input">
+      <div class="macro-label">Input</div>
+<pre><code><span data-group="det-decl">@CFDeterminantProof(coefficients: [1, 1])</span>
+<span data-group="det-enum">enum PhiDet {}</span></code></pre>
+    </div>
+    <div class="macro-output">
+      <div class="macro-label">Expanded</div>
+<pre><code><span data-group="det-enum">enum PhiDet {</span>
+  <span data-group="det-chain">// Chains grouped by right operand (here Right=1)
+  typealias Chain1x1 = AddOne&lt;Zero&gt;.OneTimesProof      // 1*1
+  typealias Chain1x2 = Chain1x1.Distributed             // 2*1</span>
+
+  <span data-group="det-step0">// Step 0 (even): h_{-1}*k_0=1*1, h_0*k_{-1}=1*0
+  typealias HTimesPrevK0 = TimesZero&lt;AddOne&lt;Zero&gt;&gt;      // 1*0 = 0
+  typealias PrevHTimesK0 = Chain1x1                      // 1*1 = 1
+  typealias Determinant0 = PlusSucc&lt;PlusZero&lt;Zero&gt;&gt;     // 0+1 = 1</span>
+
+  <span data-group="det-step1">// Step 1 (odd): h_1*k_0=2*1, h_0*k_1=1*1
+  typealias HTimesPrevK1 = Chain1x2                      // 2*1 = 2
+  typealias PrevHTimesK1 = Chain1x1                      // 1*1 = 1
+  typealias Determinant1 = PlusSucc&lt;PlusZero&lt;N1&gt;&gt;       // 1+1 = 2</span>
+
+  <span data-group="det-check">func determinantCheck() {
+      assertEqual(Determinant0.Total.self, PrevHTimesK0.Total.self)
+      assertEqual(Determinant1.Total.self, HTimesPrevK1.Total.self)
+  }</span>
+<span data-group="det-enum">}</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
 <!-- Epilogue                                                         -->
 <!-- ================================================================ -->
 <section class="epilogue" id="epilogue">
   <h2>Epilogue</h2>
   <div class="prose">
     <p>Everything you've read above is verified by the Swift compiler. The <a href="https://github.com/jakebromberg/abuse-of-notation/blob/master/Sources/AbuseOfNotationClient/main.swift" target="_blank" rel="noopener">source file</a> compiles and exits cleanly &mdash; every <code>assertEqual</code> call unifies its type arguments, and every witness type satisfies its protocol constraints. There is no runtime computation. The proof is the compilation itself.</p>
-    <p>The compiler verified 100+ mathematical facts: natural number arithmetic, continued fractions, the Leibniz series, the Wallis product, the golden ratio / Fibonacci correspondence, the &radic;2 CF / matrix construction, four universal addition theorems (left zero identity, successor-left shift, commutativity, associativity), six universal multiplication theorems (left zero annihilation, successor-left multiplication, per-A commutativity, multiplicative identities, distributivity), number-theoretic identities (difference of squares, Cassini, convergent determinant), three pi correspondences (Brouncker&ndash;Leibniz, Wallis&ndash;Leibniz, Brouncker&ndash;Wallis), and coinductive streams for irrational numbers.</p>
+    <p>The compiler verified 100+ mathematical facts: natural number arithmetic, continued fractions, the Leibniz series, the Wallis product, the golden ratio / Fibonacci correspondence, the &radic;2 CF / matrix construction, four universal addition theorems (left zero identity, successor-left shift, commutativity, associativity), six universal multiplication theorems (left zero annihilation, successor-left multiplication, per-A commutativity, multiplicative identities, distributivity), number-theoretic identities (difference of squares, Cassini, convergent determinant, and a unified CF determinant identity macro covering both constants), three pi correspondences (Brouncker&ndash;Leibniz, Wallis&ndash;Leibniz, Brouncker&ndash;Wallis), and coinductive streams for irrational numbers.</p>
     <p>To verify it yourself: <code>swift build &amp;&amp; swift run AbuseOfNotationClient</code>.</p>
   </div>
 </section>
