@@ -11,5 +11,6 @@ struct AbuseOfNotationPlugin: CompilerPlugin {
         Sqrt2ConvergenceProofMacro.self,
         MultiplicationCommutativityProofMacro.self,
         WallisProductProofMacro.self,
+        CFDeterminantProofMacro.self,
     ]
 }

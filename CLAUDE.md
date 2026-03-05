@@ -18,7 +18,7 @@ Sources/
     MultiplicationTheorems.swift             -- flat multiplication witnesses (TimesTick, TimesGroup), universal theorems (MultiplicationLeftZero, SuccessorLeftMultiplication, MultiplicationCommutativity)
     DistributivityTheorem.swift              -- distributivity of multiplication over addition (ProductSeed, MultiplicationDistributive)
     Streams.swift                            -- CFStream protocol, periodic irrationals (PhiCF, Sqrt2CF), unfold theorems, assertStreamEqual
-    Macros.swift                             -- macro declarations (@ProductConformance, @FibonacciProof, @PiConvergenceProof, @GoldenRatioProof, @Sqrt2ConvergenceProof, @MultiplicationCommutativityProof, @WallisProductProof)
+    Macros.swift                             -- macro declarations (@ProductConformance, @FibonacciProof, @PiConvergenceProof, @GoldenRatioProof, @Sqrt2ConvergenceProof, @MultiplicationCommutativityProof, @WallisProductProof, @CFDeterminantProof)
   AbuseOfNotationMacros/                     -- .macro target: compiler plugin
     Plugin.swift                             -- CompilerPlugin entry point
     ProductConformanceMacro.swift            -- @ProductConformance(n) (peer macro for inductive multiplication)
@@ -28,10 +28,11 @@ Sources/
     Sqrt2ConvergenceProofMacro.swift         -- @Sqrt2ConvergenceProof(depth:) (member macro generating sqrt(2) CF/matrix proof)
     MultiplicationCommutativityProofMacro.swift -- @MultiplicationCommutativityProof(leftOperand:depth:) (member macro generating paired commutativity proofs)
     WallisProductProofMacro.swift            -- @WallisProductProof(depth:) (member macro generating Wallis product proof)
+    CFDeterminantProofMacro.swift            -- @CFDeterminantProof(coefficients:) (member macro generating CF convergent determinant identity proof)
     ProductChainGenerator.swift              -- shared product witness chain generator (used by Pi, Wallis macros; universal factor optimization for factors 1 and 2)
     Diagnostics.swift                        -- PeanoDiagnostic enum
   AbuseOfNotationClient/                     -- SPM executable: witness-based proofs
-    main.swift                               -- 15-section tutorial: witness constructions verified by compilation
+    main.swift                               -- 16-section tutorial: witness constructions verified by compilation
 Tests/
   AbuseOfNotationMacrosTests/                -- macro expansion tests
     ProductConformanceMacroTests.swift
@@ -41,10 +42,11 @@ Tests/
     Sqrt2ConvergenceProofMacroTests.swift
     MultiplicationCommutativityProofMacroTests.swift
     WallisProductProofMacroTests.swift
+    CFDeterminantProofMacroTests.swift
 tutorial/                                    -- companion webpage for main.swift
   package.json                               -- Vite + Shiki dependencies
   vite.config.js                             -- Vite build config
-  index.html                                 -- single-page tutorial (15 sections + epilogue)
+  index.html                                 -- single-page tutorial (16 sections + epilogue)
   src/
     style.css                                -- typography, layout, responsive, components
     main.js                                  -- sidebar toggle, scroll-spy
@@ -103,6 +105,7 @@ swift test                       # run macro expansion tests
 - The difference-of-squares identity `n*(n+2) + 1 = (n+1)^2` is demonstrated at specific n using shared-base decomposition: both sides decompose via `n*(n+1)`, with `(n+1)^2 = n*(n+1) + (n+1)` (SuccessorLeftMultiplication) and `n*(n+2) = n*(n+1) + n` (distributivity + MultiplicationRightOne). Remainders differ by 1. This algebraically explains the Wallis product factor correspondence.
 - The Cassini identity `F(n-1)*F(n+1) - F(n)^2 = (-1)^n` is demonstrated at n=2,3,4 using distributivity to decompose `F(n+1)*F(n-1) = (F(n)+F(n-1))*F(n-1) = F(n)*F(n-1) + F(n-1)^2`.
 - The CF convergent determinant identity `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}` is demonstrated for sqrt(2) at n=1,2. Products are constructed using `MultiplicationLeftOne` and chained `SuccessorLeftMultiplication.Distributed` (the same universal theorems the macros now reference). For the golden ratio, this identity reduces to Cassini. The identity connects the CF convergent matrix representation to number-theoretic structure.
+- The `@CFDeterminantProof(coefficients: [b_0, b_1, ..., b_d])` macro generates the CF convergent determinant identity `h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}` for any simple continued fraction with the given partial quotients. It computes convergents internally, generates shared SuccessorLeftMultiplication chains grouped by Right value, and emits determinant sum witnesses at each step. For φ ([1;1,1,...]) this yields the Cassini identity; for √2 ([1;2,2,...]) the convergent determinant -- making explicit that both are instances of one structure.
 - The Wallis-Leibniz denominator correspondence `WQ[k] = LQ[k+1] * LQ[k]` connects the Wallis product to the Leibniz series: each Wallis denominator is the product of two consecutive Leibniz denominators. Demonstrated at k=1 (3 = 3*1 via `MultiplicationRightOne`) and k=2 (45 = 15*3 via chained `SuccessorLeftMultiplication.Distributed`). Since the Brouncker-Leibniz correspondence gives `CF_k.P = LS_{k+1}.Q`, this also yields `WQ[k] = CF_k.P * CF_{k-1}.P`, completing a three-way connection between all pi representations. A bonus exact fraction `W_1 = 2*S_2` (4/3 = 2*(2/3)) is also proved.
 - `CFStream` is a coinductive stream protocol with `Head: Natural` and `Tail: CFStream`. For periodic continued fractions, self-referential types create productive fixed points (e.g., `PhiCF.Tail = PhiCF`). Swift resolves these lazily -- `.Tail.Tail...Head` always terminates.
 - `PhiCF` represents the golden ratio CF [1; 1, 1, ...] (entirely periodic, self-referential). `Sqrt2Periodic` represents [2; 2, 2, ...] (periodic tail). `Sqrt2CF` represents sqrt(2) = [1; 2, 2, ...] (transient head + periodic tail).
