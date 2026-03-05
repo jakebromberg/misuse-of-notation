@@ -18,3 +18,6 @@ public macro MultiplicationCommutativityProof(leftOperand: Int, depth: Int) = #e
 
 @attached(member, names: arbitrary)
 public macro WallisProductProof(depth n: Int) = #externalMacro(module: "AbuseOfNotationMacros", type: "WallisProductProofMacro")
+
+@attached(member, names: arbitrary)
+public macro CFDeterminantProof(coefficients: [Int]) = #externalMacro(module: "AbuseOfNotationMacros", type: "CFDeterminantProofMacro")

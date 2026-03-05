@@ -926,6 +926,38 @@ assertEqual(PiConvergenceProof.Convergent1.P.self, PiConvergenceProof.LeibnizSum
 assertEqual(PiConvergenceProof.Convergent0.P.self, PiConvergenceProof.LeibnizSum1.Q.self)    // 1 = 1 (Brouncker-Leibniz at k=0)
 assertEqual(PiConvergenceProof.Convergent2.P.self, PiConvergenceProof.LeibnizSum3.Q.self)    // 15 = 15 (Brouncker-Leibniz at k=2)
 
+// MARK: - 16. CF convergent determinant identity (unified)
+//
+// Sections 13 and 14 proved the same identity by hand for two different
+// constants: the Cassini identity for the golden ratio CF [1;1,1,...] and
+// the convergent determinant for the sqrt(2) CF [1;2,2,...]. Both follow
+// the same pattern: at each step n, h_n*k_{n-1} - h_{n-1}*k_n = (-1)^{n+1}.
+//
+// The @CFDeterminantProof macro makes the unification explicit: give it
+// any simple CF's partial quotients and it generates the full determinant
+// proof chain. The same macro, applied to different coefficients, recovers
+// both identities.
+
+@CFDeterminantProof(coefficients: [1, 1, 1, 1, 1])
+enum GoldenRatioDeterminant {}
+
+// For φ = [1;1,1,...], the determinant identity is Cassini's identity.
+// Cross-check: the macro's convergents match the golden ratio proof's.
+assertEqual(GoldenRatioDeterminant.HTimesPrevK3.Left.self,
+            GoldenRatioProof.Convergent3.P.self)          // h_3 = 5
+assertEqual(GoldenRatioDeterminant.PrevHTimesK3.Left.self,
+            GoldenRatioProof.Convergent2.P.self)          // h_2 = 3
+
+@CFDeterminantProof(coefficients: [1, 2, 2, 2])
+enum Sqrt2Determinant2 {}
+
+// For √2 = [1;2,2,...], the same macro proves the same identity.
+// Cross-check: convergents match the sqrt(2) convergence proof's.
+assertEqual(Sqrt2Determinant2.HTimesPrevK2.Left.self,
+            Sqrt2ConvergenceProof.Convergent2.P.self)     // h_2 = 7
+assertEqual(Sqrt2Determinant2.PrevHTimesK2.Left.self,
+            Sqrt2ConvergenceProof.Convergent1.P.self)     // h_1 = 3
+
 // MARK: - Epilogue
 //
 // If you're reading this, the program compiled and exited cleanly. That
@@ -941,7 +973,8 @@ assertEqual(PiConvergenceProof.Convergent2.P.self, PiConvergenceProof.LeibnizSum
 // per-A commutativity -- including macro-generated proofs for N4 and N5 --
 // right and left multiplicative identity, and distributivity over
 // addition), number-theoretic identities (difference-of-squares, Cassini
-// identity for Fibonacci, CF convergent determinant identity for sqrt(2)),
+// identity for Fibonacci, CF convergent determinant identity for sqrt(2),
+// and a unified CF determinant identity macro covering both constants),
 // the Wallis-Leibniz denominator correspondence (connecting all three pi
 // representations), and coinductive streams for irrational numbers (PhiCF,
 // Sqrt2CF with universal unfold theorems) -- all without executing a

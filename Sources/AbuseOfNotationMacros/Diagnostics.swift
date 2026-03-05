@@ -8,6 +8,7 @@ enum PeanoDiagnostic: String, DiagnosticMessage {
     case sqrt2ConvergenceRequiresPositiveInteger = "#sqrt2ConvergenceProof requires an integer literal >= 1"
     case mulCommProofRequiresMultiplier = "#MultiplicationCommutativityProof requires an integer literal >= 2"
     case wallisProductRequiresPositiveInteger = "#wallisProductProof requires an integer literal >= 1"
+    case cfDeterminantRequiresCoefficients = "#CFDeterminantProof requires a coefficients array of at least 2 integer literals >= 1"
 
     var message: String { rawValue }
     var diagnosticID: MessageID { MessageID(domain: "AbuseOfNotationMacros", id: rawValue) }
