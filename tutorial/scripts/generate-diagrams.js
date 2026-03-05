@@ -68,20 +68,22 @@ function stripBackground(filePath) {
   writeFileSync(filePath, svg);
 }
 
-// Set explicit width/height on the outer <svg> to prevent auto-scaling.
-// This makes all diagrams render at their intrinsic pixel size (consistent
-// font and node sizes across diagrams). The CSS max-width: 100% on the
-// <img> will shrink diagrams that are wider than the container.
+// Set width/height in em units anchored to d2's font size (16px).
+// This ensures diagram text renders at 1em regardless of container width,
+// keeping diagram labels proportional to the page's body text.
+const D2_FONT_SIZE = 16;
+
 function setIntrinsicSize(filePath) {
   let svg = readFileSync(filePath, 'utf-8');
-  // Match the first <svg tag's viewBox (the outer wrapper)
   const match = svg.match(/(<svg\b[^>]*?)viewBox="0 0 (\d+) (\d+)"/);
   if (match) {
     const [fullMatch, before, w, h] = match;
     if (!before.includes('width=')) {
+      const emW = (parseInt(w) / D2_FONT_SIZE).toFixed(2);
+      const emH = (parseInt(h) / D2_FONT_SIZE).toFixed(2);
       svg = svg.replace(
         fullMatch,
-        `${before}width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"`
+        `${before}width="${emW}em" height="${emH}em" viewBox="0 0 ${w} ${h}"`
       );
       writeFileSync(filePath, svg);
     }
