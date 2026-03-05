@@ -32,7 +32,11 @@ jobs:
           cache: npm
           cache-dependency-path: tutorial/package-lock.json
 
+      - name: Install d2
+        run: curl -fsSL https://d2lang.com/install.sh | sh -s --
+
       - run: npm ci
+      - run: npm run diagrams
       - run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
