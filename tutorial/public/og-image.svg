@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fafaf9"/>
+  <text x="600" y="285" text-anchor="middle" dominant-baseline="central"
+        font-family="'STIX Two Math', 'Apple Symbols', serif"
+        font-weight="400" font-size="96" fill="#1c1917">
+    t &#x2208; &#x27E6;<tspan font-family="'Source Code Pro', 'SF Mono', monospace"
+        font-weight="600">Swift</tspan>&#x27E7;
+  </text>
+  <text x="600" y="395" text-anchor="middle"
+        font-family="'Inter', 'Helvetica Neue', sans-serif" font-weight="400"
+        font-size="28" fill="#78716c">
+    Compile-time proof verification in the Swift type system
+  </text>
+</svg>
