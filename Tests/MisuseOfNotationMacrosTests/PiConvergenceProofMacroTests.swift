@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let piConvergenceProofMacros: [String: Macro.Type] = [
     "PiConvergenceProof": PiConvergenceProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let piConvergenceProofMacros: [String: Macro.Type] = [
 #endif
 
 final class PiConvergenceProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testDepthOne() throws {
         // Depth 1: CF convergent h_1/k_1 = 3/2, Leibniz S_2 = 2/3

@@ -11,6 +11,6 @@ enum PeanoDiagnostic: String, DiagnosticMessage {
     case cfDeterminantRequiresCoefficients = "#CFDeterminantProof requires a coefficients array of at least 2 integer literals >= 1"
 
     var message: String { rawValue }
-    var diagnosticID: MessageID { MessageID(domain: "AbuseOfNotationMacros", id: rawValue) }
+    var diagnosticID: MessageID { MessageID(domain: "MisuseOfNotationMacros", id: rawValue) }
     var severity: DiagnosticSeverity { .error }
 }

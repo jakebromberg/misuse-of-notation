@@ -7,7 +7,7 @@ A Swift project exploring the boundary of what can be proved at compile time usi
 ```
 Package.swift                                -- SPM package definition
 Sources/
-  AbuseOfNotation/                           -- library: types, witnesses, type-level arithmetic
+  MisuseOfNotation/                           -- library: types, witnesses, type-level arithmetic
     PeanoTypes.swift                         -- protocols (Integer, Natural, Nonpositive), Zero, AddOne, SubOne, assertEqual
     Witnesses.swift                          -- witness protocols and constructors (NaturalSum, NaturalProduct, NaturalLessThan)
     TypeLevelArithmetic.swift                -- NaturalExpression, type aliases (N0-N105), Sum, Product, TimesNk protocols
@@ -19,7 +19,7 @@ Sources/
     DistributivityTheorem.swift              -- distributivity of multiplication over addition (ProductSeed, MultiplicationDistributive)
     Streams.swift                            -- CFStream protocol, periodic irrationals (PhiCF, Sqrt2CF), unfold theorems, assertStreamEqual
     Macros.swift                             -- macro declarations (@ProductConformance, @FibonacciProof, @PiConvergenceProof, @GoldenRatioProof, @Sqrt2ConvergenceProof, @MultiplicationCommutativityProof, @WallisProductProof, @CFDeterminantProof)
-  AbuseOfNotationMacros/                     -- .macro target: compiler plugin
+  MisuseOfNotationMacros/                     -- .macro target: compiler plugin
     Plugin.swift                             -- CompilerPlugin entry point
     ProductConformanceMacro.swift            -- @ProductConformance(n) (peer macro for inductive multiplication)
     FibonacciProofMacro.swift                -- @FibonacciProof(upTo:) (member macro generating Fibonacci witness chains)
@@ -31,10 +31,10 @@ Sources/
     CFDeterminantProofMacro.swift            -- @CFDeterminantProof(coefficients:) (member macro generating CF convergent determinant identity proof)
     ProductChainGenerator.swift              -- shared product witness chain generator (used by Pi, Wallis macros; universal factor optimization for factors 1 and 2)
     Diagnostics.swift                        -- PeanoDiagnostic enum
-  AbuseOfNotationClient/                     -- SPM executable: witness-based proofs
+  MisuseOfNotationClient/                     -- SPM executable: witness-based proofs
     main.swift                               -- 16-section tutorial: witness constructions verified by compilation
 Tests/
-  AbuseOfNotationMacrosTests/                -- macro expansion tests
+  MisuseOfNotationMacrosTests/                -- macro expansion tests
     ProductConformanceMacroTests.swift
     FibonacciProofMacroTests.swift
     PiConvergenceProofMacroTests.swift
@@ -61,7 +61,7 @@ tutorial/                                    -- companion webpage for main.swift
 
 ```sh
 swift build                      # compile (compilation = proof)
-swift run AbuseOfNotationClient  # exits cleanly (no runtime computation)
+swift run MisuseOfNotationClient  # exits cleanly (no runtime computation)
 swift test                       # run macro expansion tests
 ```
 
@@ -70,7 +70,7 @@ swift test                       # run macro expansion tests
 - Arithmetic correctness is verified by witness construction: if the types compile, the proof is valid.
 - `assertEqual<T: Integer>(_: T.Type, _: T.Type)` asserts type equality at compile time (empty body -- compilation is the assertion). `assertStreamEqual<T: CFStream>` does the same for stream types.
 - Macro expansion correctness is verified by `assertMacroExpansion` in `swift test`.
-- A clean `swift build && swift run AbuseOfNotationClient && swift test` means all checks pass.
+- A clean `swift build && swift run MisuseOfNotationClient && swift test` means all checks pass.
 
 ## Code conventions
 

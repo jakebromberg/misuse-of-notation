@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let sqrt2ConvergenceProofMacros: [String: Macro.Type] = [
     "Sqrt2ConvergenceProof": Sqrt2ConvergenceProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let sqrt2ConvergenceProofMacros: [String: Macro.Type] = [
 #endif
 
 final class Sqrt2ConvergenceProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testDepthOne() throws {
         // Depth 1: CF [1;2,...] convergents h_0=1, h_1=3, k_0=1, k_1=2

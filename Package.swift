@@ -3,25 +3,25 @@ import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
-    name: "AbuseOfNotation",
+    name: "MisuseOfNotation",
     platforms: [.macOS(.v10_15)],
     products: [
-        .library(name: "AbuseOfNotation", targets: ["AbuseOfNotation"]),
-        .executable(name: "AbuseOfNotationClient", targets: ["AbuseOfNotationClient"]),
+        .library(name: "MisuseOfNotation", targets: ["MisuseOfNotation"]),
+        .executable(name: "MisuseOfNotationClient", targets: ["MisuseOfNotationClient"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     ],
     targets: [
-        .macro(name: "AbuseOfNotationMacros", dependencies: [
+        .macro(name: "MisuseOfNotationMacros", dependencies: [
             .product(name: "SwiftDiagnostics", package: "swift-syntax"),
             .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         ]),
-        .target(name: "AbuseOfNotation", dependencies: ["AbuseOfNotationMacros"]),
-        .executableTarget(name: "AbuseOfNotationClient", dependencies: ["AbuseOfNotation"]),
-        .testTarget(name: "AbuseOfNotationMacrosTests", dependencies: [
-            "AbuseOfNotationMacros",
+        .target(name: "MisuseOfNotation", dependencies: ["MisuseOfNotationMacros"]),
+        .executableTarget(name: "MisuseOfNotationClient", dependencies: ["MisuseOfNotation"]),
+        .testTarget(name: "MisuseOfNotationMacrosTests", dependencies: [
+            "MisuseOfNotationMacros",
             .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
         ]),
     ]

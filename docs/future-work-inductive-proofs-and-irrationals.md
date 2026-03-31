@@ -13,7 +13,7 @@ This document explores how to extend the system to prove **universal** arithmeti
 ### Current witness infrastructure
 
 ```
-Sources/AbuseOfNotation/
+Sources/MisuseOfNotation/
   PeanoTypes.swift           -- Integer, Natural, Nonpositive, Zero, AddOne, SubOne, assertEqual
   Witnesses.swift            -- NaturalSum (PlusZero, PlusSucc), NaturalProduct (TimesZero, TimesSucc),
                                 NaturalLessThan (ZeroLT, SuccLT)
@@ -304,7 +304,7 @@ could generate the `PlusZeroIdentity` protocol, `Zero` conformance, and `AddOne`
 
 ### Architecture
 
-The macro plugin (`AbuseOfNotationMacros`) already has the infrastructure: `ProductConformanceMacro.swift` shows how to generate protocol definitions, conformances, and constrained extensions from a single attribute. New proof macros would follow the same pattern, using `peanoTypeName(for:)` to emit type names and building witness chains programmatically.
+The macro plugin (`MisuseOfNotationMacros`) already has the infrastructure: `ProductConformanceMacro.swift` shows how to generate protocol definitions, conformances, and constrained extensions from a single attribute. New proof macros would follow the same pattern, using `peanoTypeName(for:)` to emit type names and building witness chains programmatically.
 
 The macro is the **tactics engine** (automates proof construction). The type checker is the **kernel** (verifies correctness). This mirrors the architecture of proof assistants like Lean and Coq.
 
