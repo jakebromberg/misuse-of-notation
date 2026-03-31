@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abuse of Notation: A Tutorial</title>
+  <title>A Misuse of Notation: A Tutorial</title>
   <meta name="description" content="A guided tour through encoding natural numbers and mathematical proofs as Swift types. Compilation is verification.">
   <link rel="shortcut icon" type="image/svg" href="https://funlandresearch.com/favicon.svg">
-  <meta property="og:title" content="An Abuse of Notation: A Tutorial">
+  <meta property="og:title" content="A Misuse of Notation: A Tutorial">
   <meta property="og:description" content="Compile-time proof verification in the Swift type system.">
-  <meta property="og:image" content="https://abuseofnotation.funlandresearch.com/og-image.png">
+  <meta property="og:image" content="https://misuseofnotation.funlandresearch.com/og-image.png">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="An Abuse of Notation: A Tutorial">
+  <meta name="twitter:title" content="A Misuse of Notation: A Tutorial">
   <meta name="twitter:description" content="Compile-time proof verification in the Swift type system.">
-  <meta name="twitter:image" content="https://abuseofnotation.funlandresearch.com/og-image.png">
+  <meta name="twitter:image" content="https://misuseofnotation.funlandresearch.com/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
   <a href="https://funlandresearch.com">
     <img class="hero" src="https://funlandresearch.com/hero.svg" />
   </a>
-  <div class="sidebar-title">Abuse of Notation</div>
+  <div class="sidebar-title">A Misuse of Notation</div>
   <ul class="sidebar-nav">
     <li class="part-label">Part 1 &mdash; Foundation</li>
     <li><a href="#section-1">1. Peano types</a></li>
@@ -66,9 +66,9 @@
 <div class="content-inner">
 
 <header class="tutorial-header">
-  <h1>An Abuse of Notation</h1>
+  <h1>A Misuse of Notation</h1>
   <h2>t ∈ ⟦Swift⟧</h2>
-  <p class="subtitle">A guided tour through encoding natural numbers and mathematical proofs as Swift types. Every statement is verified by the compiler &mdash; if this program compiles, every theorem is correct. The source code for this project is available on <a href="https://github.com/jakebromberg/abuse-of-notation/" target="_blank" rel="noopener">GitHub</a></p>
+  <p class="subtitle">A guided tour through encoding natural numbers and mathematical proofs as Swift types. Every statement is verified by the compiler &mdash; if this program compiles, every theorem is correct. The source code for this project is available on <a href="https://github.com/jakebromberg/misuse-of-notation/" target="_blank" rel="noopener">GitHub</a></p>
 </header>
 
 <!-- ================================================================ -->
@@ -789,9 +789,9 @@ assertEqual(Sqrt2Determinant2.PrevHTimesK2.Left.self,
 <section class="epilogue" id="epilogue">
   <h2>Epilogue</h2>
   <div class="prose">
-    <p>Everything you've read above is verified by the Swift compiler. The <a href="https://github.com/jakebromberg/abuse-of-notation/blob/master/Sources/AbuseOfNotationClient/main.swift" target="_blank" rel="noopener">source file</a> compiles and exits cleanly &mdash; every <code>assertEqual</code> call unifies its type arguments, and every witness type satisfies its protocol constraints. There is no runtime computation. The proof is the compilation itself.</p>
+    <p>Everything you've read above is verified by the Swift compiler. The <a href="https://github.com/jakebromberg/misuse-of-notation/blob/master/Sources/MisuseOfNotationClient/main.swift" target="_blank" rel="noopener">source file</a> compiles and exits cleanly &mdash; every <code>assertEqual</code> call unifies its type arguments, and every witness type satisfies its protocol constraints. There is no runtime computation. The proof is the compilation itself.</p>
     <p>The compiler verified 100+ mathematical facts: natural number arithmetic, continued fractions, the Leibniz series, the Wallis product, the golden ratio / Fibonacci correspondence, the &radic;2 CF / matrix construction, four universal addition theorems (left zero identity, successor-left shift, commutativity, associativity), six universal multiplication theorems (left zero annihilation, successor-left multiplication, per-A commutativity, multiplicative identities, distributivity), number-theoretic identities (difference of squares, Cassini, convergent determinant, and a unified CF determinant identity macro covering both constants), three pi correspondences (Brouncker&ndash;Leibniz, Wallis&ndash;Leibniz, Brouncker&ndash;Wallis), and coinductive streams for irrational numbers.</p>
-    <p>To verify it yourself: <code>swift build &amp;&amp; swift run AbuseOfNotationClient</code>.</p>
+    <p>To verify it yourself: <code>swift build &amp;&amp; swift run MisuseOfNotationClient</code>.</p>
   </div>
 </section>
 

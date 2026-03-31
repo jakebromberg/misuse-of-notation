@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let multiplicationCommutativityProofMacros: [String: Macro.Type] = [
     "MultiplicationCommutativityProof": MultiplicationCommutativityProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let multiplicationCommutativityProofMacros: [String: Macro.T
 #endif
 
 final class MultiplicationCommutativityProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testLeftOperandTwoDepthTwo() throws {
         assertMacroExpansion(

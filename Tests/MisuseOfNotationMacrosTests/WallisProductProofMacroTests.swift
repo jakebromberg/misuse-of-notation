@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let wallisProductProofMacros: [String: Macro.Type] = [
     "WallisProductProof": WallisProductProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let wallisProductProofMacros: [String: Macro.Type] = [
 #endif
 
 final class WallisProductProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testDepthOne() throws {
         // Depth 1: W_0 = 1/1, W_1 = 4/3

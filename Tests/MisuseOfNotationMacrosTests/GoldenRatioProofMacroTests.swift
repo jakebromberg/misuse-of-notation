@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let goldenRatioProofMacros: [String: Macro.Type] = [
     "GoldenRatioProof": GoldenRatioProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let goldenRatioProofMacros: [String: Macro.Type] = [
 #endif
 
 final class GoldenRatioProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testDepthOne() throws {
         // Depth 1: CF [1;1,...] convergents h_0=1, h_1=2, k_0=1, k_1=1

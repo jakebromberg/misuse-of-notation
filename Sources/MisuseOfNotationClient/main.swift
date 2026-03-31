@@ -1,7 +1,7 @@
-import AbuseOfNotation
+import MisuseOfNotation
 
 // ============================================================================
-// Abuse of Notation: A tutorial
+// A Misuse of Notation: A tutorial
 //
 // This file is a guided tour through encoding natural numbers as Swift types.
 // Every statement below is verified by the compiler -- if this file compiles,

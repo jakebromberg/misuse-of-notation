@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let cfDeterminantProofMacros: [String: Macro.Type] = [
     "CFDeterminantProof": CFDeterminantProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let cfDeterminantProofMacros: [String: Macro.Type] = [
 #endif
 
 final class CFDeterminantProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testDepthOneGoldenRatioCoefficients() throws {
         // [1, 1]: h=[-1:1, 0:1, 1:2], k=[-1:0, 0:1, 1:1]

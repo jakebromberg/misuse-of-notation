@@ -1,4 +1,4 @@
-# Abuse of Notation
+# A Misuse of Notation
 
 Encoding the natural numbers as Swift types using the Peano axioms, with witness-based proofs that verify arithmetic facts at compile time. A successful `swift build` is the proof.
 
@@ -365,6 +365,6 @@ assertEqual(Sqrt2ConvergenceProof.MatrixPower3.B.self, Sqrt2ConvergenceProof.Con
 
 ```sh
 swift build                      # compile (compilation = proof)
-swift run AbuseOfNotationClient  # exits cleanly
+swift run MisuseOfNotationClient  # exits cleanly
 swift test                       # run macro expansion tests
 ```

@@ -2,8 +2,8 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(AbuseOfNotationMacros)
-import AbuseOfNotationMacros
+#if canImport(MisuseOfNotationMacros)
+import MisuseOfNotationMacros
 
 nonisolated(unsafe) let fibonacciProofMacros: [String: Macro.Type] = [
     "FibonacciProof": FibonacciProofMacro.self,
@@ -11,7 +11,7 @@ nonisolated(unsafe) let fibonacciProofMacros: [String: Macro.Type] = [
 #endif
 
 final class FibonacciProofMacroTests: XCTestCase {
-    #if canImport(AbuseOfNotationMacros)
+    #if canImport(MisuseOfNotationMacros)
 
     func testUpToOne() throws {
         assertMacroExpansion(
